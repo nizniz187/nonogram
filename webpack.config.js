@@ -1,0 +1,61 @@
+const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const srcPath = path.resolve(__dirname, 'src');
+const distPath = path.resolve(__dirname, 'dist');
+
+module.exports = {
+  entry: `${srcPath}/index.jsx`,
+  output: {
+    filename: 'index.bundle.js',
+    path: distPath,
+    publicPath: distPath
+  },
+  mode: "development",
+  devServer: {
+    contentBase: path.resolve(__dirname),
+    index: 'index.html',
+    writeToDisk: true,
+    hot: true,
+    watchContentBase: true
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          { loader: MiniCssExtractPlugin.loader },
+          'css-loader'
+        ]
+      },
+      { 
+        test: /.jsx$/, 
+        exclude: /node_modules/, 
+        use: { 
+					loader: 'babel-loader', 
+					options: { 
+						presets: [
+							'@babel/preset-react',
+							'@babel/preset-env'
+						] 
+					} 
+        } 
+			},
+			{ 
+				test: /.js$/, 
+				exclude: /node_modules/, 
+				use: { 
+					loader: 'babel-loader', 
+					options: { 
+						presets: ['@babel/preset-env'] 
+					}
+				}
+			}
+    ]
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].bundle.css'
+    })
+  ]
+};
