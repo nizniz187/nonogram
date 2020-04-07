@@ -1,2 +1,2 @@
 # nonogram
-Nonogram hands-on project, implemented with React &amp; PWA.
+Nonogram hands-on project, implemented with React.
