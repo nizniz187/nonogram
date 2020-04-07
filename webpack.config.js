@@ -5,9 +5,9 @@ const srcPath = path.resolve(__dirname, 'src');
 const distPath = path.resolve(__dirname, 'dist');
 
 module.exports = {
-  entry: `${srcPath}/index.jsx`,
+  entry: `${srcPath}/main.js`,
   output: {
-    filename: 'index.bundle.js',
+    filename: '[name].bundle.js',
     path: distPath,
     publicPath: distPath
   },
@@ -29,7 +29,7 @@ module.exports = {
         ]
       },
       { 
-        test: /.jsx$/, 
+        test: /.js|.jsx$/, 
         exclude: /node_modules/, 
         use: { 
 					loader: 'babel-loader', 
@@ -40,16 +40,6 @@ module.exports = {
 						] 
 					} 
         } 
-			},
-			{ 
-				test: /.js$/, 
-				exclude: /node_modules/, 
-				use: { 
-					loader: 'babel-loader', 
-					options: { 
-						presets: ['@babel/preset-env'] 
-					}
-				}
 			}
     ]
   },
