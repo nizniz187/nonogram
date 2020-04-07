@@ -1,0 +1,19 @@
+.nonogram-row {
+  font-size: 0;
+}
+
+.nonogram-cell {
+  border: 1px solid black;
+  display: inline-block;
+  width: 50px; height: 50px;
+}
+.nonogram-cell:not(:last-child) {
+  border-right: none;
+}
+.nonogram-row:not(:last-child) .nonogram-cell {
+  border-bottom: none;
+}
+
+.nonogram-cell.checked {
+  background-color: black;
+}
