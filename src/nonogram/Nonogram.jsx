@@ -5,30 +5,37 @@ import './Nonogram.css';
 class Nonogram extends React.Component {
   constructor(props) {
     super(props);
+    let rowLength = this.isBoardSizeValid(this.props.rowLength) 
+      ? this.props.rowLength : DEFAULT_SETTINGS.ROW_LENGTH;
+    let colLength = this.isBoardSizeValid(this.props.colLength) 
+      ? this.props.colLength : DEFAULT_SETTINGS.COL_LENGTH;
+    this.state = {
+      rowLength: rowLength,
+      colLength: colLength,
+      bitmap: this.createRandomBitMap(rowLength, colLength)
+    }
   }
 
+  createRandomBitMap(rowLength, colLength) {
+    let bitmap = new Array(0);
+    for(let i = 0; i < rowLength; i++) {
+      let row = new Array(0);
+      for(let j = 0; j < colLength; j++) {
+        row.push(Math.round(Math.random()));
+      }
+      bitmap.push(row);
+    }
+    return bitmap;
+  }
   isBoardSizeValid(size) {
     return Number.isInteger(size) && size > 0;
   }
   render() {
     return (
-      <Board rowLength={this.rowLength} colLength={this.colLength} />
+      <Board 
+        rowLength={this.state.rowLength} colLength={this.state.colLength} 
+        bitmap={this.state.bitmap} />
     );
-  }
-
-  get colLength() {
-    if(this.isBoardSizeValid(this.props.colLength)) {
-      return this.props.colLength;
-    } else {
-      return DEFAULT_SETTINGS.COL_LENGTH;
-    }
-  }
-  get rowLength() {
-    if(this.isBoardSizeValid(this.props.rowLength)) {
-      return this.props.rowLength;
-    } else {
-      return DEFAULT_SETTINGS.ROW_LENGTH;
-    }
   }
 }
 

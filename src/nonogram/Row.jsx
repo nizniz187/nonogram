@@ -12,7 +12,9 @@ class Row extends React.Component {
   renderCells(index, length) {
     let cells = new Array(0);
     for(let i = 0; i < length; i++) {
-      cells.push(<Cell rowIndex={index} colIndex={i} key={`${index}-${i}`} />);
+      cells.push(
+        <Cell rowIndex={index} colIndex={i} key={`${index}-${i}`} bit={this.props.bitmap[i]} />
+      );
     }
     return cells;
   }

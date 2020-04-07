@@ -13,3 +13,7 @@
 .nonogram-row:not(:last-child) .nonogram-cell {
   border-bottom: none;
 }
+
+.nonogram-cell.checked {
+  background-color: black;
+}
