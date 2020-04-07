@@ -1,5 +1,4 @@
 import React from 'react';
-import './nonogram.css';
 
 class Cell extends React.Component {
   constructor(props) {

@@ -1,6 +1,5 @@
 import React from 'react';
 import Row from './Row.jsx';
-import './nonogram.css';
 
 class Board extends React.Component {
   constructor(props) {
@@ -10,7 +9,7 @@ class Board extends React.Component {
   render() {
     return (
       <div className="nonogram-board">
-        {this.renderRows(this.props.row, this.props.col)}
+        {this.renderRows(this.props.rowLength, this.props.colLength)}
       </div>
     );
   }

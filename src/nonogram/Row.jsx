@@ -1,6 +1,5 @@
 import React from 'react';
 import Cell from './Cell.jsx';
-import './nonogram.css';
 
 class Row extends React.Component {
   render() {

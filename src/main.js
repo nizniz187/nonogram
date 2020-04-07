@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Board from './nonogram/Board.jsx';
+import Nonogram from './nonogram/Nonogram.jsx';
 
 window.addEventListener('load', () => {
-  ReactDOM.render(<Board row="15" col="15" />, document.getElementById('root'));
+  ReactDOM.render(<Nonogram />, document.getElementById('root'));
 });
