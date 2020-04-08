@@ -103,4 +103,5 @@ typings/
 .tern-port
 
 # webpack dev server hot-update
-.hot-update.json
+*.hot-update.json
+*.hot-update.js

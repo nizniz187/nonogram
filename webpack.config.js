@@ -5,7 +5,7 @@ const srcPath = path.resolve(__dirname, 'src');
 const distPath = path.resolve(__dirname, 'dist');
 
 module.exports = {
-  entry: `${srcPath}/main.js`,
+  entry: `${srcPath}/main`,
   output: {
     filename: '[name].bundle.js',
     path: distPath,

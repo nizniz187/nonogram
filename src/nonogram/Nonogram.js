@@ -1,5 +1,6 @@
 import React from 'react';
-import Board from './Board.jsx';
+import IndicatorPanel from './IndicatorPanel.js';
+import Board from './Board.js';
 import './Nonogram.css';
 
 class Nonogram extends React.Component {
@@ -32,9 +33,13 @@ class Nonogram extends React.Component {
   }
   render() {
     return (
-      <Board 
-        rowLength={this.state.rowLength} colLength={this.state.colLength} 
-        bitmap={this.state.bitmap} />
+      <div className="nonogram">
+        <IndicatorPanel for="col" bitmap={this.state.bitmap} />
+        <IndicatorPanel for="row" bitmap={this.state.bitmap} />
+        <Board 
+          rowLength={this.state.rowLength} colLength={this.state.colLength} 
+          bitmap={this.state.bitmap} />
+      </div>
     );
   }
 }

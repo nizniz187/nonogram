@@ -1,5 +1,5 @@
 import React from 'react';
-import Row from './Row.jsx';
+import Row from './Row.js';
 
 class Board extends React.Component {
   constructor(props) {
