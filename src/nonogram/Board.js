@@ -9,13 +9,13 @@ class Board extends React.Component {
   render() {
     return (
       <div className="nonogram-board">
-        {this.renderRows(this.props.rowLength, this.props.colLength)}
+        {this.renderRows()}
       </div>
     );
   }
-  renderRows(rowLength, colLength) {
+  renderRows() {
     let rows = new Array(0);
-    for(let i = 0; i < rowLength; i++) {
+    for(let i = 0; i < this.props.bitmap.rowLength; i++) {
       rows.push(
         <Row key={i} index={i} bitmap={this.props.bitmap.slice(i, i + 1)} />
       );

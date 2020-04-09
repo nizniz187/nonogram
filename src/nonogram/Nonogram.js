@@ -32,8 +32,8 @@ class Nonogram extends React.Component {
   render() {
     return (
       <div className="nonogram">
-        {/* <IndicatorPanel type="col" bitmap={this.state.bitmap.transpose()} />
-        <IndicatorPanel type="row" bitmap={this.state.bitmap} /> */}
+        <IndicatorPanel type="col" bitmap={new Bitmap(this.state.bitmap.cols)} />
+        <IndicatorPanel type="row" bitmap={this.state.bitmap} />
         <Board 
           rowLength={this.state.bitmap.rowLength} 
           colLength={this.state.bitmap.colLength} 

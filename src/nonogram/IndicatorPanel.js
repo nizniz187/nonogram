@@ -11,11 +11,15 @@ class IndicatorPanel extends React.Component {
   }
   renderIndicators() {
     let indicators = new Array(0);
-    this.props.bitmap.forEach((bits, index) => {
+    for(let i = 0; i < this.props.bitmap.rows.length; i++) {
       indicators.push(
-        <Indicator type={this.props.type} bitmap={bits} key={index} />
+        <Indicator 
+          type={this.props.type} 
+          bitmap={this.props.bitmap.slice(i, i + 1)} 
+          key={i} 
+        />
       );
-    });
+    }
     return indicators;
   }
 }

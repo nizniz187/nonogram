@@ -3,21 +3,21 @@ import React from 'react';
 class Indicator extends React.Component {
   render() {
     return (
-      <div class={`nonogram-indicator ${this.props.type}`}>
-        {this.renderText()}
+      <div className={`nonogram-indicator ${this.props.type}`}>
+        {this.renderItems()}
       </div>
     );
   }
-  renderText() {
-    let texts = new Array(0);
-    this.props.bitmap.forEach(bit => {
-      if(bit === 1) {
-
-      } else {
-
-      }
+  renderItems() {
+    let items = new Array(0);
+    this.props.bitmap.snappedData.forEach((data, index) => {
+      items.push(
+        <div className='nonogram-indicator-item' key={index}>
+          {data}
+        </div>
+      )
     });
-    return texts;
+    return items;
   }
 }
 

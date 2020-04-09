@@ -17,7 +17,7 @@ class Row extends React.Component {
           rowIndex={this.props.index} 
           colIndex={i} 
           key={`${this.props.index}-${i}`} 
-          bit={this.props.bitmap.data[0][i]} 
+          bit={this.props.bitmap.getBit(0, i)} 
         />
       );
     }
