@@ -19,6 +19,11 @@ module.exports = {
     hot: true,
     watchContentBase: true
   },
+  resolve: {
+    alias: {
+      data: `${srcPath}/data`
+    }
+  },
   module: {
     rules: [
       {

@@ -5,15 +5,20 @@ class Row extends React.Component {
   render() {
     return (
       <div className="nonogram-row">
-        {this.renderCells(this.props.index, this.props.length)}
+        {this.renderCells()}
       </div>
     );
   }
-  renderCells(index, length) {
+  renderCells() {
     let cells = new Array(0);
-    for(let i = 0; i < length; i++) {
+    for(let i = 0; i < this.props.bitmap.colLength; i++) {
       cells.push(
-        <Cell rowIndex={index} colIndex={i} key={`${index}-${i}`} bit={this.props.bitmap[i]} />
+        <Cell 
+          rowIndex={this.props.index} 
+          colIndex={i} 
+          key={`${this.props.index}-${i}`} 
+          bit={this.props.bitmap.data[0][i]} 
+        />
       );
     }
     return cells;

@@ -17,7 +17,7 @@ class Board extends React.Component {
     let rows = new Array(0);
     for(let i = 0; i < rowLength; i++) {
       rows.push(
-        <Row key={i} index={i} length={colLength} bitmap={this.props.bitmap[i]} />
+        <Row key={i} index={i} bitmap={this.props.bitmap.slice(i, i + 1)} />
       );
     }
     return rows;
