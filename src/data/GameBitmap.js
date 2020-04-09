@@ -51,17 +51,17 @@ class GameBitmap {
     let snappedData = new Array(0);
     this.data.forEach(bits => {
       let array = new Array(0);
-      bits.forEach(bit => {
+      bits.forEach((bit, index) => {
+        if(bit === 0) { return; }
         if(array.length === 0) {
-          array.push(bit);
+          array.push(1);
           return;
         }
 
-        let lastBit = GameBitmap.normalizeBit(array[array.length - 1]);
-        if(bit === lastBit) {
+        if(index === 0 || bits[index - 1] === 1) {
           array[array.length - 1]++;
         } else {
-          array.push(bit);
+          array.push(1);
         }
       })
       snappedData.push(array);

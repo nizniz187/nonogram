@@ -1,3 +1,17 @@
+.nonogram-indicator-panel.col {
+  margin-left: 50px;
+}
+.nonogram-indicator-panel.row {
+  float: left;
+}
+
+.nonogram-indicator {
+  min-width: 50px;
+}
+.nonogram-indicator-panel.col .nonogram-indicator {
+  width: 50px;
+}
+
 .nonogram-row {
   font-size: 0;
 }
