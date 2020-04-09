@@ -32,12 +32,14 @@ class Nonogram extends React.Component {
   render() {
     return (
       <div className="nonogram">
-        <IndicatorPanel type="col" bitmap={new Bitmap(this.state.bitmap.cols)} />
         <IndicatorPanel type="row" bitmap={this.state.bitmap} />
-        <Board 
-          rowLength={this.state.bitmap.rowLength} 
-          colLength={this.state.bitmap.colLength} 
-          bitmap={this.state.bitmap} />
+        <div>
+          <IndicatorPanel type="col" bitmap={new Bitmap(this.state.bitmap.cols)} />
+          <Board 
+            rowLength={this.state.bitmap.rowLength} 
+            colLength={this.state.bitmap.colLength} 
+            bitmap={this.state.bitmap} />
+        </div>
       </div>
     );
   }

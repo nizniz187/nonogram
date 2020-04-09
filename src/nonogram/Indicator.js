@@ -10,7 +10,7 @@ class Indicator extends React.Component {
   }
   renderItems() {
     let items = new Array(0);
-    this.props.bitmap.snappedData.forEach((data, index) => {
+    this.props.bitmap.snappedData[0].forEach((data, index) => {
       items.push(
         <div className='nonogram-indicator-item' key={index}>
           {data}

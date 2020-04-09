@@ -1,19 +1,35 @@
-.nonogram-indicator-panel.col {
-  margin-left: 50px;
-}
-.nonogram-indicator-panel.row {
-  float: left;
+.nonogram {
+  display: flex;
+  max-width: 100%;
 }
 
-.nonogram-indicator {
-  min-width: 50px;
+.nonogram-indicator-panel {
+  display: flex; flex-wrap: nowrap; align-items: flex-end;
 }
-.nonogram-indicator-panel.col .nonogram-indicator {
-  width: 50px;
+.nonogram-indicator-panel.row {
+  flex-direction: column; justify-content: flex-end;
+}
+.nonogram-indicator {
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 50px; min-height: 50px;
+}
+.nonogram-indicator.col {
+  border-left: 1px solid transparent;
+  flex-direction: column;
+}
+.nonogram-indicator.row {
+  border-top: 1px solid transparent;
+  justify-content: flex-end;
+}
+
+.nonogram-indicator-item {
+  display: flex; justify-content: center; align-items: center;
+  padding-left: 4px; padding-right: 4px;
 }
 
 .nonogram-row {
-  font-size: 0;
+  display: flex; flex-wrap: nowrap;
 }
 
 .nonogram-cell {
