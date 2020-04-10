@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Bitmap from 'data/GameBitmap.js';
+import Bitmap from 'data/PuzzleBitmap.js';
 
 import IndicatorPanel from './IndicatorPanel.js';
 import Board from './Board.js';
@@ -68,7 +68,6 @@ class Nonogram extends React.Component {
     this.setState(state => {
       let userBitmap = state.userBitmap.clone();
       userBitmap.setBit(rowIndex, colIndex, bit);
-      console.log(userBitmap)
       return { userBitmap };
     });
   }

@@ -1,9 +1,9 @@
-class GameBitmap {
+class PuzzleBitmap {
   constructor({ rowLength, colLength, data } = {}) {
-    if(GameBitmap.isDataValid(data)) {
-      GameBitmap.normalizeData(data);
+    if(PuzzleBitmap.isDataValid(data)) {
+      PuzzleBitmap.normalizeData(data);
       this.data = data;
-    } else if(GameBitmap.isSizeValid(rowLength) && GameBitmap.isSizeValid(colLength)) {
+    } else if(PuzzleBitmap.isSizeValid(rowLength) && PuzzleBitmap.isSizeValid(colLength)) {
       this.data = new Array(0);
       for(let i = 0; i < rowLength; i++) {
         let row = new Array(colLength);
@@ -16,7 +16,7 @@ class GameBitmap {
   }
 
   static createRandom({ rowLength, colLength }) {
-    if(!GameBitmap.isSizeValid(rowLength) || !GameBitmap.isSizeValid(colLength)) {
+    if(!PuzzleBitmap.isSizeValid(rowLength) || !PuzzleBitmap.isSizeValid(colLength)) {
       throw new Error('Invalid bitmap size.');
     }
 
@@ -28,7 +28,7 @@ class GameBitmap {
       }
       data.push(row);
     }
-    return new GameBitmap({ data });
+    return new PuzzleBitmap({ data });
   }
   static isDataValid(data) {
     return Array.isArray(data) && data.every(bits => Array.isArray(bits));
@@ -36,13 +36,13 @@ class GameBitmap {
   static isSizeValid(size) { return Number.isInteger(size) && size > 0; }
   static normalizeBit(bit) { return Math.min(Math.max(bit, 0), 1); }
   static normalizeData(data) {
-    if(!GameBitmap.isDataValid(data)) { throw new Error('Invalid data.'); }
+    if(!PuzzleBitmap.isDataValid(data)) { throw new Error('Invalid data.'); }
 
     let maxLength = 0;
     /* Normalize data to 0 & 1. */
     data.forEach(bits => {
       maxLength = Math.max(maxLength, bits.length);
-      bits = bits.map(GameBitmap.normalizeBit);
+      bits = bits.map(PuzzleBitmap.normalizeBit);
     });
     /* Fill 0s to make every row bits equal length. */
     data.forEach(bits => {
@@ -50,12 +50,12 @@ class GameBitmap {
     });
   }
 
-  clone() { return new GameBitmap({ data: this.data }); }
+  clone() { return new PuzzleBitmap({ data: this.data }); }
   getBit(rowIndex, colIndex) { return this.data[rowIndex][colIndex]; }
   setBit(rowIndex, colIndex, bit) {
-    this.data[rowIndex][colIndex] = GameBitmap.normalizeBit(bit);
+    this.data[rowIndex][colIndex] = PuzzleBitmap.normalizeBit(bit);
   }
-  slice(start, end) { return new GameBitmap({ data: this.data.slice(start, end) }); }
+  slice(start, end) { return new PuzzleBitmap({ data: this.data.slice(start, end) }); }
 
   get colLength() { return this.data[0].length; }
   get cols() { return this.transposedData }
@@ -93,4 +93,4 @@ class GameBitmap {
   }
 }
 
-export default GameBitmap;
+export default PuzzleBitmap;
