@@ -18,6 +18,7 @@
 .nonogram-indicator.col {
   border-left: 1px solid transparent;
   flex-direction: column;
+  justify-content: flex-end;
 }
 .nonogram-indicator.row {
   border-top: 1px solid transparent;
