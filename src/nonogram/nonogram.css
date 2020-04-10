@@ -3,6 +3,7 @@
   max-width: 100%;
 }
 
+/* ^Indicator */
 .nonogram-indicator-panel {
   display: flex; flex-wrap: nowrap; align-items: flex-end;
 }
@@ -28,6 +29,7 @@
   padding-left: 4px; padding-right: 4px;
 }
 
+/* ^Game Board */
 .nonogram-row {
   display: flex; flex-wrap: nowrap;
 }
@@ -35,7 +37,9 @@
 .nonogram-cell {
   border: 1px solid black;
   display: inline-block;
+  font-size: 40px; line-height: 50px;
   width: 50px; height: 50px;
+  text-align: center;
 }
 .nonogram-cell:not(:last-child) {
   border-right: none;
@@ -46,4 +50,7 @@
 
 .nonogram-cell.checked {
   background-color: black;
+}
+.nonogram-cell.excluded:before {
+  content: '✖';
 }
