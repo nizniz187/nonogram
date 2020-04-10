@@ -16,13 +16,9 @@ class Cell extends React.Component {
     return (
       <div className={`nonogram-cell ${this.state.mark}`}
         onClick={this.updateMark.bind(this)} 
-        onContextMenu={this.setMarkExcluded.bind(this)} 
+        onContextMenu={this.updateMarkExcluded.bind(this)} 
       />
     );
-  }
-  setMarkExcluded(e) {
-    e.preventDefault();
-    this.setState({ mark: MARK.EXCLUDED });
   }
   updateMark() {
     this.setState(state => { 
@@ -35,6 +31,16 @@ class Cell extends React.Component {
           return { mark: MARK.UNCHECKED };
         default:
           return state;
+      }
+    }, this.updateUserBit.bind(this));
+  }
+  updateMarkExcluded(e) {
+    e.preventDefault();
+    this.setState(state => {
+      if(this.state.mark === MARK.EXCLUDED) {
+        return { mark: MARK.UNCHECKED };
+      } else {
+        return { mark: MARK.EXCLUDED }
       }
     }, this.updateUserBit.bind(this));
   }
