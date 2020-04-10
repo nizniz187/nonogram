@@ -15,9 +15,12 @@ class Board extends React.Component {
   }
   renderRows() {
     let rows = new Array(0);
-    for(let i = 0; i < this.props.bitmap.rowLength; i++) {
+    for(let i = 0; i < this.props.rowLength; i++) {
       rows.push(
-        <Row key={i} index={i} bitmap={this.props.bitmap.slice(i, i + 1)} />
+        <Row 
+          key={i} index={i} length={this.props.colLength}
+          updateUserBitHandler={this.props.updateUserBitHandler}
+        />
       );
     }
     return rows;

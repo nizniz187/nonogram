@@ -4,11 +4,27 @@ class Cell extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mark: this.props.bit ? MARK.CHECKED : MARK.UNCHECKED
+      mark: MARK.UNCHECKED
     };
   }
 
-  changeMark() {
+  getUserBitByMark() {
+    if(this.state.mark === MARK.CHECKED) { return 1; }
+    else { return 0; }
+  }
+  render() {
+    return (
+      <div className={`nonogram-cell ${this.state.mark}`}
+        onClick={this.updateMark.bind(this)} 
+        onContextMenu={this.setMarkExcluded.bind(this)} 
+      />
+    );
+  }
+  setMarkExcluded(e) {
+    e.preventDefault();
+    this.setState({ mark: MARK.EXCLUDED });
+  }
+  updateMark() {
     this.setState(state => { 
       switch(state.mark) {
         case MARK.UNCHECKED:
@@ -20,20 +36,15 @@ class Cell extends React.Component {
         default:
           return state;
       }
-    });
+    }, this.updateUserBit.bind(this));
   }
-  render() {
-    return (
-      <div className={`nonogram-cell ${this.state.mark}`}
-        onClick={this.changeMark.bind(this)} 
-        onContextMenu={this.setMarkExcluded.bind(this)} 
-      />
+  updateUserBit() {
+    this.props.updateUserBitHandler(
+      this.props.rowIndex, this.props.colIndex, this.userBit
     );
   }
-  setMarkExcluded(e) {
-    e.preventDefault();
-    this.setState({ mark: MARK.EXCLUDED });
-  }
+
+  get userBit() { return this.getUserBitByMark(); }
 }
 
 const MARK = {

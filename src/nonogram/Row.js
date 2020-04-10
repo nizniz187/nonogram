@@ -11,13 +11,11 @@ class Row extends React.Component {
   }
   renderCells() {
     let cells = new Array(0);
-    for(let i = 0; i < this.props.bitmap.colLength; i++) {
+    for(let i = 0; i < this.props.length; i++) {
       cells.push(
         <Cell 
-          rowIndex={this.props.index} 
-          colIndex={i} 
-          key={`${this.props.index}-${i}`} 
-          bit={this.props.bitmap.getBit(0, i)} 
+          rowIndex={this.props.index} colIndex={i} key={`${this.props.index}-${i}`} 
+          updateUserBitHandler={this.props.updateUserBitHandler}
         />
       );
     }

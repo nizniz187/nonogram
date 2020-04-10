@@ -10,44 +10,73 @@ class Nonogram extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { bitmap: this.createBitmap() };
+    let bitmap = this.createRandomBitmap({ 
+      rowLength: Number(this.props.rowLength), 
+      colLength: Number(this.props.colLength)
+    });
+    this.state = { 
+      bitmap: bitmap, 
+      userBitmap: this.createEmptyBitmap({ 
+        rowLength: bitmap.rowLength, 
+        colLength: bitmap.colLength 
+      })
+    };
   }
   
-  createBitmap() {
+  createBitmap({ 
+    rowLength = DEFAULT_SETTINGS.ROW_LENGTH, 
+    colLength = DEFAULT_SETTINGS.COL_LENGTH,
+    data
+  } = {}) {
     let bitmap = null;
-    try {
-      bitmap = Bitmap.createRandom({
-        rowLength: this.props.rowLength, 
-        colLength: this.props.colLength
-      });
-    } catch(e) {
-      console.log('Using default settings.');
-      bitmap = Bitmap.createRandom({
-        rowLength: DEFAULT_SETTINGS.ROW_LENGTH, 
-        colLength: DEFAULT_SETTINGS.COL_LENGTH
-      });
+    if(typeof data === 'string' && data.toLowerCase() === 'random') {
+      bitmap = Bitmap.createRandom({ rowLength, colLength });
+    } else {
+      bitmap = new Bitmap({ rowLength, colLength, data });
     }
     return bitmap;
+  }
+  createEmptyBitmap({ rowLength, colLength } = {}) {
+    return this.createBitmap({ rowLength, colLength });
+  }
+  createRandomBitmap({ rowLength, colLength } = {}) {
+    return this.createBitmap({ rowLength, colLength, data: 'random' });
   }
   render() {
     return (
       <div className="nonogram">
-        <IndicatorPanel type="row" bitmap={this.state.bitmap} />
+        <IndicatorPanel 
+          type="row" 
+          bitmap={this.state.bitmap} 
+          userBitmap={this.state.userBitmap}
+        />
         <div>
-          <IndicatorPanel type="col" bitmap={new Bitmap(this.state.bitmap.cols)} />
+          <IndicatorPanel type="col" 
+            bitmap={new Bitmap({ data: this.state.bitmap.cols })} 
+            userBitmap={this.state.userBitmap}
+          />
           <Board 
             rowLength={this.state.bitmap.rowLength} 
             colLength={this.state.bitmap.colLength} 
-            bitmap={this.state.bitmap} />
+            updateUserBitHandler={this.updateUserBitmapByBit.bind(this)}
+          />
         </div>
       </div>
     );
+  }
+  updateUserBitmapByBit(rowIndex, colIndex, bit) {
+    this.setState(state => {
+      let userBitmap = state.userBitmap.clone();
+      userBitmap.setBit(rowIndex, colIndex, bit);
+      console.log(userBitmap)
+      return { userBitmap };
+    });
   }
 }
 
 const DEFAULT_SETTINGS = {
   COL_LENGTH: 15,
   ROW_LENGTH: 15 
-}
+};
 
 export default Nonogram;

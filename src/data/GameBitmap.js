@@ -1,8 +1,18 @@
 class GameBitmap {
-  constructor(data) {
-    if(!GameBitmap.isDataValid(data)) { throw new Error('Invalid data.'); }
-    GameBitmap.normalizeData(data);
-    this.data = data;
+  constructor({ rowLength, colLength, data } = {}) {
+    if(GameBitmap.isDataValid(data)) {
+      GameBitmap.normalizeData(data);
+      this.data = data;
+    } else if(GameBitmap.isSizeValid(rowLength) && GameBitmap.isSizeValid(colLength)) {
+      this.data = new Array(0);
+      for(let i = 0; i < rowLength; i++) {
+        let row = new Array(colLength);
+        row.fill(0);
+        this.data.push(row);
+      }
+    } else {
+      throw new Error('Invalid bitmap data.');
+    }
   }
 
   static createRandom({ rowLength, colLength }) {
@@ -18,7 +28,7 @@ class GameBitmap {
       }
       data.push(row);
     }
-    return new GameBitmap(data);
+    return new GameBitmap({ data });
   }
   static isDataValid(data) {
     return Array.isArray(data) && data.every(bits => Array.isArray(bits));
@@ -40,8 +50,12 @@ class GameBitmap {
     });
   }
 
+  clone() { return new GameBitmap({ data: this.data }); }
   getBit(rowIndex, colIndex) { return this.data[rowIndex][colIndex]; }
-  slice(start, end) { return new GameBitmap(this.data.slice(start, end)); }
+  setBit(rowIndex, colIndex, bit) {
+    this.data[rowIndex][colIndex] = GameBitmap.normalizeBit(bit);
+  }
+  slice(start, end) { return new GameBitmap({ data: this.data.slice(start, end) }); }
 
   get colLength() { return this.data[0].length; }
   get cols() { return this.transposedData }
