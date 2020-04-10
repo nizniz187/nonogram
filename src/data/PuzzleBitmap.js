@@ -51,6 +51,13 @@ class PuzzleBitmap {
   }
 
   clone() { return new PuzzleBitmap({ data: this.data }); }
+  equals(bitmap) {
+    return this.data.every((row, rowIndex) => {
+      return row.every((bit, colIndex) => {
+        return bit === bitmap.getBit(rowIndex, colIndex);
+      });
+    });
+  }
   getBit(rowIndex, colIndex) { return this.data[rowIndex][colIndex]; }
   setBit(rowIndex, colIndex, bit) {
     this.data[rowIndex][colIndex] = PuzzleBitmap.normalizeBit(bit);

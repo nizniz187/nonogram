@@ -23,6 +23,11 @@ class Nonogram extends React.Component {
     };
   }
   
+  checkPuzzleSolved() {
+    if(this.state.bitmap.equals(this.state.userBitmap)) {
+      alert('Puzzle Solved!');
+    }
+  }
   createBitmap({ 
     rowLength = DEFAULT_SETTINGS.ROW_LENGTH, 
     colLength = DEFAULT_SETTINGS.COL_LENGTH,
@@ -69,7 +74,7 @@ class Nonogram extends React.Component {
       let userBitmap = state.userBitmap.clone();
       userBitmap.setBit(rowIndex, colIndex, bit);
       return { userBitmap };
-    });
+    }, this.checkPuzzleSolved.bind(this));
   }
 }
 
