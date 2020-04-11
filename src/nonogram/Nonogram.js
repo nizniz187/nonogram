@@ -1,6 +1,7 @@
 import React from 'react';
 
-import Bitmap from 'data/PuzzleBitmap.js';
+import PuzzleBitmap from 'data/PuzzleBitmap.js';
+import UserBitmap from 'data/UserBitmap.js';
 
 import IndicatorPanel from './IndicatorPanel.js';
 import Board from './Board.js';
@@ -10,59 +11,39 @@ class Nonogram extends React.Component {
   constructor(props) {
     super(props);
 
-    let bitmap = this.createRandomBitmap({ 
-      rowLength: Number(this.props.rowLength), 
-      colLength: Number(this.props.colLength)
-    });
+    let puzzleBitmap = PuzzleBitmap.createRandom(
+      Number(this.props.rowLength), Number(this.props.colLength)
+    );
     this.state = { 
-      bitmap: bitmap, 
-      userBitmap: this.createEmptyBitmap({ 
-        rowLength: bitmap.rowLength, 
-        colLength: bitmap.colLength 
+      puzzleBitmap: puzzleBitmap, 
+      userBitmap: new UserBitmap({ 
+        rowLength: puzzleBitmap.rowLength, 
+        colLength: puzzleBitmap.colLength 
       })
     };
   }
   
   checkPuzzleSolved() {
-    if(this.state.bitmap.equals(this.state.userBitmap)) {
+    if(this.state.puzzleBitmap.normalizedEquals(this.state.userBitmap)) {
       alert('Puzzle Solved!');
     }
-  }
-  createBitmap({ 
-    rowLength = DEFAULT_SETTINGS.ROW_LENGTH, 
-    colLength = DEFAULT_SETTINGS.COL_LENGTH,
-    data
-  } = {}) {
-    let bitmap = null;
-    if(typeof data === 'string' && data.toLowerCase() === 'random') {
-      bitmap = Bitmap.createRandom({ rowLength, colLength });
-    } else {
-      bitmap = new Bitmap({ rowLength, colLength, data });
-    }
-    return bitmap;
-  }
-  createEmptyBitmap({ rowLength, colLength } = {}) {
-    return this.createBitmap({ rowLength, colLength });
-  }
-  createRandomBitmap({ rowLength, colLength } = {}) {
-    return this.createBitmap({ rowLength, colLength, data: 'random' });
   }
   render() {
     return (
       <div className="nonogram">
         <IndicatorPanel 
           type="row" 
-          bitmap={this.state.bitmap} 
+          puzzleBitmap={this.state.puzzleBitmap} 
           userBitmap={this.state.userBitmap}
         />
         <div>
           <IndicatorPanel type="col" 
-            bitmap={new Bitmap({ data: this.state.bitmap.cols })} 
+            puzzleBitmap={new PuzzleBitmap({ data: this.state.puzzleBitmap.cols })} 
             userBitmap={this.state.userBitmap}
           />
           <Board 
-            rowLength={this.state.bitmap.rowLength} 
-            colLength={this.state.bitmap.colLength} 
+            rowLength={this.state.puzzleBitmap.rowLength} 
+            colLength={this.state.puzzleBitmap.colLength} 
             updateUserBitHandler={this.updateUserBitmapByBit.bind(this)}
           />
         </div>
@@ -77,10 +58,5 @@ class Nonogram extends React.Component {
     }, this.checkPuzzleSolved.bind(this));
   }
 }
-
-const DEFAULT_SETTINGS = {
-  COL_LENGTH: 15,
-  ROW_LENGTH: 15 
-};
 
 export default Nonogram;
