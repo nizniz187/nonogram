@@ -7,6 +7,10 @@ import IndicatorPanel from './IndicatorPanel.js';
 import Board from './Board.js';
 import './Nonogram.css';
 
+/**
+ * @class Nonogram
+ * Class for the whole nonogram game.
+ */
 class Nonogram extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +27,9 @@ class Nonogram extends React.Component {
     };
   }
   
+  /**
+   * Check if the puzzle is solved with the correct answer.
+   */
   checkPuzzleSolved() {
     if(this.state.puzzleBitmap.normalizedEquals(this.state.userBitmap)) {
       alert('Puzzle Solved!');
@@ -43,19 +50,11 @@ class Nonogram extends React.Component {
           />
           <Board 
             rowLength={this.state.puzzleBitmap.rowLength} 
-            colLength={this.state.puzzleBitmap.colLength} 
-            updateUserBitHandler={this.updateUserBitmapByBit.bind(this)}
+            colLength={this.state.puzzleBitmap.colLength}
           />
         </div>
       </div>
     );
-  }
-  updateUserBitmapByBit(rowIndex, colIndex, bit) {
-    this.setState(state => {
-      let userBitmap = state.userBitmap.clone();
-      userBitmap.setBit(rowIndex, colIndex, bit);
-      return { userBitmap };
-    }, this.checkPuzzleSolved.bind(this));
   }
 }
 

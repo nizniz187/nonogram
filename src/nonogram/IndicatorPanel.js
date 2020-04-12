@@ -1,6 +1,10 @@
 import React from 'react';
 import Indicator from './Indicator.js';
 
+/**
+ * @class IndicatorPanel
+ * Class for game indicators.
+ */
 class IndicatorPanel extends React.Component {  
   render() {
     return (

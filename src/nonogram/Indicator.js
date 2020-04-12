@@ -1,5 +1,9 @@
 import React from 'react';
 
+/**
+ * @class Indicator
+ * Class for an indicator item.
+ */
 class Indicator extends React.Component {
   render() {
     return (

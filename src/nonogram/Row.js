@@ -1,6 +1,10 @@
 import React from 'react';
 import Cell from './Cell.js';
 
+/**
+ * @class Row
+ * Class for a row in the nonogram board.
+ */
 class Row extends React.Component {
   render() {
     return (
@@ -14,8 +18,8 @@ class Row extends React.Component {
     for(let i = 0; i < this.props.length; i++) {
       cells.push(
         <Cell 
-          rowIndex={this.props.index} colIndex={i} key={`${this.props.index}-${i}`} 
-          updateUserBitHandler={this.props.updateUserBitHandler}
+          rowIndex={this.props.index} colIndex={i} 
+          key={`${this.props.index}-${i}`} 
         />
       );
     }

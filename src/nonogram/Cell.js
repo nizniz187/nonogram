@@ -1,60 +1,29 @@
 import React from 'react';
 
+/**
+ * @class Cell
+ * Class for a nonogram cell.
+ */
 class Cell extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      mark: MARK.UNCHECKED
-    };
-  }
-
-  getUserBitByMark() {
-    if(this.state.mark === MARK.CHECKED) { return 1; }
-    else { return 0; }
-  }
   render() {
     return (
-      <div className={`nonogram-cell ${this.state.mark}`}
-        onClick={this.updateMark.bind(this)} 
-        onContextMenu={this.updateMarkExcluded.bind(this)} 
+      <div className={`nonogram-cell ${this.bitClassName}`}
+        data-row-index={this.props.rowIndex}
+        data-col-index={this.props.colIndex}
       />
     );
   }
-  updateMark() {
-    this.setState(state => { 
-      switch(state.mark) {
-        case MARK.UNCHECKED:
-          return { mark: MARK.CHECKED };
-        case MARK.CHECKED:
-          return { mark: MARK.EXCLUDED };
-        case MARK.EXCLUDED:
-          return { mark: MARK.UNCHECKED };
-        default:
-          return state;
-      }
-    }, this.updateUserBit.bind(this));
-  }
-  updateMarkExcluded(e) {
-    e.preventDefault();
-    this.setState(state => {
-      if(this.state.mark === MARK.EXCLUDED) {
-        return { mark: MARK.UNCHECKED };
-      } else {
-        return { mark: MARK.EXCLUDED }
-      }
-    }, this.updateUserBit.bind(this));
-  }
-  updateUserBit() {
-    this.props.updateUserBitHandler(
-      this.props.rowIndex, this.props.colIndex, this.userBit
-    );
-  }
 
-  get userBit() { return this.getUserBitByMark(); }
+  get bitClassName() {
+    switch(this.props.bit) {
+      case 1:
+        return 'checked';
+      case -1:
+        return 'excluded';
+      default:
+        return '';
+    }
+  }
 }
-
-const MARK = {
-  CHECKED: 'checked', EXCLUDED: 'excluded', UNCHECKED: 'unchecked'
-};
 
 export default Cell;
