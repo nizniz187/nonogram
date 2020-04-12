@@ -21,7 +21,8 @@ module.exports = {
   },
   resolve: {
     alias: {
-      data: `${srcPath}/data`
+      data: `${srcPath}/data`,
+      helper: `${srcPath}/helper`
     }
   },
   module: {
