@@ -67,7 +67,7 @@ class PuzzleBitmap {
       });
     });
   }
-  getBit(rowIndex, colIndex) { return this.data[rowIndex][colIndex]; }
+  getBit(position) { return this.data[position.rowIndex][position.colIndex]; }
   isDataValid(data) {
     return Array.isArray(data) && data.every(bits => Array.isArray(bits));
   }
@@ -87,17 +87,18 @@ class PuzzleBitmap {
   normalizeData(data) {
     if(!this.isDataValid(data)) { throw new Error('Invalid data.'); }
 
+    let normalizedData = new Array(0);
     let maxLength = 0;
     /* Normalize data to 0 & 1. */
-    data.forEach(bits => {
+    data.forEach((bits) => {
       maxLength = Math.max(maxLength, bits.length);
-      bits = bits.map(this.normalizeBit);
+      normalizedData.push(bits.map(this.normalizeBit));
     });
     /* Fill 0s to make every row bits equal length. */
-    data.forEach(bits => {
-      if(bits.length < maxLength) { bits.fill(0, bits.length, maxLength); }
+    data.forEach((bits, index) => {
+      if(bits.length < maxLength) { normalizedData[i].fill(0, bits.length, maxLength); }
     });
-    return data;
+    return normalizedData;
   }
   /**
    * Normalize & check if a given bitmap has the equivalent data with self.
@@ -112,8 +113,8 @@ class PuzzleBitmap {
       });
     });
   }
-  setBit(rowIndex, colIndex, bit) {
-    this.data[rowIndex][colIndex] = this.normalizeBit(bit);
+  setBit(position, bit) {
+    this.data[position.rowIndex][position.colIndex] = this.normalizeBit(bit);
   }
   /**
    * Slice part of data with given range and return it as a new bitmap.

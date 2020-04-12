@@ -20,6 +20,7 @@ class Row extends React.Component {
         <Cell 
           rowIndex={this.props.index} colIndex={i} 
           key={`${this.props.index}-${i}`} 
+          userBit={this.props.userBitmap.getBit({ rowIndex: 0, colIndex: i })}
         />
       );
     }

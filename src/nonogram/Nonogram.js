@@ -35,6 +35,7 @@ class Nonogram extends React.Component {
       alert('Puzzle Solved!');
     }
   }
+  getUserBitmapBit(position) { return this.state.userBitmap.getBit(position); }
   render() {
     return (
       <div className="nonogram">
@@ -51,10 +52,29 @@ class Nonogram extends React.Component {
           <Board 
             rowLength={this.state.puzzleBitmap.rowLength} 
             colLength={this.state.puzzleBitmap.colLength}
+            userBitmap={this.state.userBitmap}
+            getUserBitmapBit={this.getUserBitmapBit.bind(this)}
+            updateUserBitmapByBit={this.updateUserBitmapByBit.bind(this)}
+            updateUserBitmapBySelection={this.updateUserBitmapBySelection.bind(this)}
           />
         </div>
       </div>
     );
+  }
+  updateUserBitmapByBit(position, value) {
+    this.setState(state => {
+      let updatedUserBitmap = state.userBitmap.clone();
+      updatedUserBitmap.setBit(position, value);
+      return { userBitmap: updatedUserBitmap };
+    }, this.checkPuzzleSolved.bind(this));
+  }
+  /**
+   * Update a given selection of the user bitmap to a given value.
+   * @param {Selection} selection - User selection.
+   * @param {int} value - Value to be set.
+   */
+  updateUserBitmapBySelection(selection, value) {
+
   }
 }
 

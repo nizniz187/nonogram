@@ -15,7 +15,7 @@ class Cell extends React.Component {
   }
 
   get bitClassName() {
-    switch(this.props.bit) {
+    switch(this.props.userBit) {
       case 1:
         return 'checked';
       case -1:
