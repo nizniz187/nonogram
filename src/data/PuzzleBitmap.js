@@ -3,6 +3,14 @@
  * Bitmap for a nonogram puzzle.
  */
 class PuzzleBitmap {
+  /**
+   * Create a bitmap with a given data,
+   *  otherwise create it with given size for null data.
+   * @param {Object} params
+   * @param {int} [params.rowLength] - Row length.
+   * @param {int} [params.colLEngth] - Column length.
+   * @param {Array[int][int]} [params.data] - Bitmap data.
+   */
   constructor({ rowLength, colLength, data } = {}) {
     if(this.isDataValid(data)) {
       this._data = this.normalizeData(data);

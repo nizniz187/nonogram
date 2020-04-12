@@ -7,6 +7,14 @@ import PuzzleBitmap from 'data/PuzzleBitmap.js';
  *  which represents excluded mark.
  */
 class UserBitmap extends PuzzleBitmap {
+  /**
+   * Create a bitmap with a given data,
+   *  otherwise create it with given size for null data.
+   * @param {Object} params
+   * @param {int} [params.rowLength] - Row length.
+   * @param {int} [params.colLEngth] - Column length.
+   * @param {Array[int][int]} [params.data] - Bitmap data.
+   */
   constructor({ rowLength, colLength, data } = {}) {
     super({ rowLength, colLength, data });
     if(this.isDataValid(data)) {
