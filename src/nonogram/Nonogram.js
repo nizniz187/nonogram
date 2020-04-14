@@ -35,10 +35,13 @@ class Nonogram extends React.Component {
       alert('Puzzle Solved!');
     }
   }
-  getUserBitmapBit(position) { return this.state.userBitmap.getBit(position); }
+  getUserBitmapBit(position) { return this.state.userBitmap.getBit(position); }  
+  preventContextMenu(e) { e.preventDefault(); }
   render() {
     return (
-      <div className="nonogram">
+      <div className="nonogram" 
+        onContextMenu={this.preventContextMenu.bind(this)}
+      >
         <IndicatorPanel 
           type="row" 
           puzzleBitmap={this.state.puzzleBitmap} 

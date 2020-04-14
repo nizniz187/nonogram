@@ -11,7 +11,7 @@ import BitPosition from 'helper/BitPosition.js';
 class Board extends React.Component {
   constructor(props) {
     super(props);
-    this.selection = this.selectionStartBit = null;
+    this.selection = this.bitUpdateObj = null;
   }
 
   getCellPosition(cell) {
@@ -30,8 +30,6 @@ class Board extends React.Component {
   render() {
     return (
       <div className="nonogram-board"
-        // onClick={this.updateCell.bind(this)}
-        // onContextMenu={this.updateCellExcluded.bind(this)}
         onMouseDown={this.selectionStartHandler.bind(this)}
         onMouseUp={this.selectionEndHandler.bind(this)}
         onMouseMove={this.selectionHandler.bind(this)}
@@ -57,7 +55,7 @@ class Board extends React.Component {
 
     this.selection.updateEnd(this.getCellPosition(e.target));
     this.updateUserBitmap();
-    this.selection = this.selectionStartBit = null;
+    this.selection = this.updateBitObj = null;
   }
   selectionHandler(e) {
     if(this.selection === null) { return; }
@@ -68,32 +66,27 @@ class Board extends React.Component {
   selectionStartHandler(e) {
     let position = this.getCellPosition(e.target);
     this.selection = new BitSelection(position);
+
+    let oldBit = this.props.getUserBitmapBit(this.selection.start);
+    /* 
+      Get new bit value by mouse click button type. 
+      Right button for excluded mark toggle.
+      Otherwise change marks in turns (unmarked, marked, excluded).
+    */
+    let newBit = e.button === 2 
+      ? this.getUpdatedExcludedBit(oldBit)
+      : this.getUpdatedBit(oldBit);
+    this.updateBitObj = { oldBit, newBit };
     this.updateUserBitmap();
   }
-  // updateCell(e) {
-  //   let position = this.getCellPosition(e.target);
-  //   let bit = this.props.getUserBitmapBit(position);
-  //   this.props.updateUserBitmapByBit(position, this.getUpdatedBit(bit));
-  // }
-  // updateCellExcluded(e) {
-  //   e.preventDefault();
-    
-  //   let position = this.getCellPosition(e.target);
-  //   let bit = this.props.getUserBitmapBit(position);
-  //   this.props.updateUserBitmapByBit(position, this.getUpdatedExcludedBit(bit));
-  // }
   updateUserBitmap() {
-    if(this.selection === null) { return; }
-    if(this.selectionStartBit === null) {
-      this.selectionStartBit = this.props.getUserBitmapBit(this.selection.start);
-    }
+    if(this.selection === null || this.updateBitObj === null) { return; }
 
-    let updatedBit = this.getUpdatedBit(this.selectionStartBit);
     let positions = this.selection.getPositions();
     positions.forEach(position => {
       let bit = this.props.userBitmap.getBit(position);
-      if(bit === this.selectionStartBit) {
-        this.props.updateUserBitmapByBit(position, updatedBit);
+      if(bit === this.updateBitObj.oldBit) {
+        this.props.updateUserBitmapByBit(position, this.updateBitObj.newBit);
       }
     });
   }
