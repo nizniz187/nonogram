@@ -11,7 +11,7 @@ import BitPosition from 'helper/BitPosition.js';
 class Board extends React.Component {
   constructor(props) {
     super(props);
-    this.selection = null;
+    this.selection = this.selectionStartBit = null;
   }
 
   getCellPosition(cell) {
@@ -30,11 +30,11 @@ class Board extends React.Component {
   render() {
     return (
       <div className="nonogram-board"
-        onClick={this.updateCell.bind(this)}
-        onContextMenu={this.updateCellExcluded.bind(this)}
-        // onMouseDown={this.selectionStartHandler.bind(this)}
-        // onMouseUp={this.selectionEndHandler.bind(this)}
-        // onMouseMove={this.selectionHandler.bind(this)}
+        // onClick={this.updateCell.bind(this)}
+        // onContextMenu={this.updateCellExcluded.bind(this)}
+        onMouseDown={this.selectionStartHandler.bind(this)}
+        onMouseUp={this.selectionEndHandler.bind(this)}
+        onMouseMove={this.selectionHandler.bind(this)}
       >
         {this.renderRows()}
       </div>
@@ -52,34 +52,50 @@ class Board extends React.Component {
     }
     return rows;
   }
-  // selectionEndHandler(e) {
-  //   if(this.selection === null) { return; }
+  selectionEndHandler(e) {
+    if(this.selection === null) { return; }
 
-  //   this.selection.updateEnd(this.getCellIndex(e.target));
-  //   this.props.updateUserBitmapByBitSelection(this.selection);
-  //   this.selection = null;
-  // }
-  // selectionHandler(e) {
-  //   if(this.selection === null) { return; }
-
-  //   this.selection.updateEnd(this.getCellIndex(e.target));
-  //   this.props.updateUserBitmapByBitSelection(this.selection);
-  // }
-  // selectionStartHandler(e) {
-  //   this.selection = new BitSelection(this.getCellIndex(e.target));
-  //   this.props.updateUserBitmapByBitSelection(this.selection);
-  // }
-  updateCell(e) {
-    let position = this.getCellPosition(e.target);
-    let bit = this.props.getUserBitmapBit(position);
-    this.props.updateUserBitmapByBit(position, this.getUpdatedBit(bit));
+    this.selection.updateEnd(this.getCellPosition(e.target));
+    this.updateUserBitmap();
+    this.selection = this.selectionStartBit = null;
   }
-  updateCellExcluded(e) {
-    e.preventDefault();
-    
+  selectionHandler(e) {
+    if(this.selection === null) { return; }
+
+    this.selection.updateEnd(this.getCellPosition(e.target));
+    this.updateUserBitmap();
+  }
+  selectionStartHandler(e) {
     let position = this.getCellPosition(e.target);
-    let bit = this.props.getUserBitmapBit(position);
-    this.props.updateUserBitmapByBit(position, this.getUpdatedExcludedBit(bit));
+    this.selection = new BitSelection(position);
+    this.updateUserBitmap();
+  }
+  // updateCell(e) {
+  //   let position = this.getCellPosition(e.target);
+  //   let bit = this.props.getUserBitmapBit(position);
+  //   this.props.updateUserBitmapByBit(position, this.getUpdatedBit(bit));
+  // }
+  // updateCellExcluded(e) {
+  //   e.preventDefault();
+    
+  //   let position = this.getCellPosition(e.target);
+  //   let bit = this.props.getUserBitmapBit(position);
+  //   this.props.updateUserBitmapByBit(position, this.getUpdatedExcludedBit(bit));
+  // }
+  updateUserBitmap() {
+    if(this.selection === null) { return; }
+    if(this.selectionStartBit === null) {
+      this.selectionStartBit = this.props.getUserBitmapBit(this.selection.start);
+    }
+
+    let updatedBit = this.getUpdatedBit(this.selectionStartBit);
+    let positions = this.selection.getPositions();
+    positions.forEach(position => {
+      let bit = this.props.userBitmap.getBit(position);
+      if(bit === this.selectionStartBit) {
+        this.props.updateUserBitmapByBit(position, updatedBit);
+      }
+    });
   }
 }
 
