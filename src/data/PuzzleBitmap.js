@@ -67,9 +67,62 @@ class PuzzleBitmap {
       });
     });
   }
+  /**
+   * Get snapped data of a row or a column by combine all 1s & remove all others.
+   * @param {Array} array - Row or column array data.
+   * @returns {Array} Snapped array data.
+   */
+  getArraySnappedData(array) {
+    let snappedData = new Array(0);
+    array.forEach((bit, index) => {
+      if(bit !== 1) { return; }
+      if(snappedData.length === 0) {
+        snappedData.push(1);
+        return;
+      }
+
+      if(index === 0 || array[index - 1] === 1) {
+        snappedData[snappedData.length - 1]++;
+      } else {
+        snappedData.push(1);
+      }
+    });
+    return snappedData;
+  }
   getBit(position) { return this.data[position.rowIndex][position.colIndex]; }
+  getColumnData(colIndex) {
+    if(!this.isColumnIndexValid(colIndex)) { throw new Error('Invalid index.'); }
+    
+    let column = new Array(0);
+    this.data.forEach(row => {
+      column.push(row[colIndex]);
+    });
+    return column;
+  }
+  getColumnSnappedData(colIndex) {    
+    let columnData = this.getColumnData(colIndex);
+    return this.getArraySnappedData(columnData);
+  }
+  getRowData(rowIndex) {
+    if(!this.isRowIndexValid(rowIndex)) { throw new Error('Invalid index.'); }
+    return this.data[rowIndex];
+  }
+  getRowSnappedData(rowIndex) {    
+    let rowData = this.getRowData(rowIndex);
+    return this.getArraySnappedData(rowData);
+  }
+  isColumnIndexValid(colIndex) {
+    if(Number.isInteger(colIndex) === false) { return false; }
+    if(colIndex >= this.colLength || colIndex < 0) { return false; }
+    return true;
+  }
   isDataValid(data) {
     return Array.isArray(data) && data.every(bits => Array.isArray(bits));
+  }
+  isRowIndexValid(rowIndex) {
+    if(Number.isInteger(rowIndex) === false) { return false; }
+    if(rowIndex >= this.rowLength || rowIndex < 0) { return false; }
+    return true;
   }
   isSizeValid(size) { return PuzzleBitmap.isSizeValid(size); }
   /**
@@ -136,35 +189,19 @@ class PuzzleBitmap {
    */
   get rows() { return this.data; }
   /**
-   * @getter Get snapped data by combine all 1s & remove all 0s.
+   * @getter Get snapped data by combine all 1s & remove all the others.
    */
   get snappedData() {
     let snappedData = new Array(0);
-    this.data.forEach(bits => {
-      let array = new Array(0);
-      bits.forEach((bit, index) => {
-        if(bit === 0) { return; }
-        if(array.length === 0) {
-          array.push(1);
-          return;
-        }
-
-        if(index === 0 || bits[index - 1] === 1) {
-          array[array.length - 1]++;
-        } else {
-          array.push(1);
-        }
-      })
-      snappedData.push(array);
-    });
+    for(let i = 0; i < this.rowLength; i++) {
+      snaRowppedDatush(this.getSnappedRowData(i));
+    }
     return snappedData;
   }
   get transposedData() {
     let transposedData = new Array(0);
-    for(let i = 0; i < this.data[0].length; i++) {
-      let array = new Array(0);
-      this.data.forEach(row => array.push(row[i]));
-      transposedData.push(array);
+    for(let i = 0; i < this.colLength; i++) {
+      transposedData.push(this.getColumnData(i));
     }
     return transposedData;
   }
