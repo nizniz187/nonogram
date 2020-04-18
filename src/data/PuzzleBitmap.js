@@ -194,7 +194,7 @@ class PuzzleBitmap {
   get snappedData() {
     let snappedData = new Array(0);
     for(let i = 0; i < this.rowLength; i++) {
-      snaRowppedDatush(this.getSnappedRowData(i));
+      snappedData.push(this.getRowSnappedData(i));
     }
     return snappedData;
   }
@@ -204,6 +204,13 @@ class PuzzleBitmap {
       transposedData.push(this.getColumnData(i));
     }
     return transposedData;
+  }
+  get transposedSnappedData() {
+    let snappedData = new Array(0);
+    for(let i = 0; i < this.colLength; i++) {
+      snappedData.push(this.getColumnSnappedData(i));
+    }
+    return snappedData;
   }
 }
 

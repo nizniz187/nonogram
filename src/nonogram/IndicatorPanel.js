@@ -16,12 +16,11 @@ class IndicatorPanel extends React.Component {
   
   renderIndicators() {
     let indicators = new Array(0);
-    for(let i = 0; i < this.props.puzzleBitmap.rows.length; i++) {
+    for(let i = 0; i < this.props.data.length; i++) {
       indicators.push(
         <Indicator 
-          type={this.props.type} 
-          puzzleBitmap={this.props.puzzleBitmap.slice(i, i + 1)} 
-          key={i} 
+          type={this.props.type} data={this.props.data[i]} 
+          key={`indicator-${this.props.type}-${i}`} 
         />
       );
     }

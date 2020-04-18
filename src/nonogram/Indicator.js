@@ -15,10 +15,12 @@ class Indicator extends React.Component {
   
   renderItems() {
     let items = new Array(0);
-    this.props.puzzleBitmap.snappedData[0].forEach((data, index) => {
+    this.props.data.forEach((value, index) => {
       items.push(
-        <div className='nonogram-indicator-item' key={index}>
-          {data}
+        <div className='nonogram-indicator-item' 
+          key={`indicator-${this.props.type}-item-${index}`}
+        >
+          {value}
         </div>
       )
     });
