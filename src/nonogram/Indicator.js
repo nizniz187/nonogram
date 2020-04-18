@@ -12,6 +12,7 @@ class Indicator extends React.Component {
       </div>
     );
   }
+  
   renderItems() {
     let items = new Array(0);
     this.props.puzzleBitmap.snappedData[0].forEach((data, index) => {

@@ -13,6 +13,7 @@ class IndicatorPanel extends React.Component {
       </div>
     );
   }
+  
   renderIndicators() {
     let indicators = new Array(0);
     for(let i = 0; i < this.props.puzzleBitmap.rows.length; i++) {

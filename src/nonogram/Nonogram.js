@@ -23,20 +23,13 @@ class Nonogram extends React.Component {
       userBitmap: new UserBitmap({ 
         rowLength: puzzleBitmap.rowLength, 
         colLength: puzzleBitmap.colLength 
-      })
+      }),
+      puzzleSolvedChecker: {
+        rows: (new Array(puzzleBitmap.rowLength)).fill(false),
+        cols: (new Array(puzzleBitmap.colLength)).fill(false)
+      }
     };
-  }
-  
-  /**
-   * Check if the puzzle is solved with the correct answer.
-   */
-  checkPuzzleSolved() {
-    if(this.state.puzzleBitmap.normalizedEquals(this.state.userBitmap)) {
-      alert('Puzzle Solved!');
-    }
-  }
-  getUserBitmapBit(position) { return this.state.userBitmap.getBit(position); }  
-  preventContextMenu(e) { e.preventDefault(); }
+  }  
   render() {
     return (
       <div className="nonogram" 
@@ -58,26 +51,31 @@ class Nonogram extends React.Component {
             userBitmap={this.state.userBitmap}
             getUserBitmapBit={this.getUserBitmapBit.bind(this)}
             updateUserBitmapByBit={this.updateUserBitmapByBit.bind(this)}
-            updateUserBitmapBySelection={this.updateUserBitmapBySelection.bind(this)}
           />
         </div>
       </div>
     );
   }
+  componentDidUpdate() {
+    console.log('updated');
+  }
+  
+  /**
+   * Check if the puzzle is solved with the correct answer.
+   */
+  checkPuzzleSolved() {
+    if(this.state.puzzleBitmap.normalizedEquals(this.state.userBitmap)) {
+      alert('Puzzle Solved!');
+    }
+  }
+  getUserBitmapBit(position) { return this.state.userBitmap.getBit(position); }  
+  preventContextMenu(e) { e.preventDefault(); }
   updateUserBitmapByBit(position, value) {
     this.setState(state => {
       let updatedUserBitmap = state.userBitmap.clone();
       updatedUserBitmap.setBit(position, value);
       return { userBitmap: updatedUserBitmap };
-    }, this.checkPuzzleSolved.bind(this));
-  }
-  /**
-   * Update a given selection of the user bitmap to a given value.
-   * @param {Selection} selection - User selection.
-   * @param {int} value - Value to be set.
-   */
-  updateUserBitmapBySelection(selection, value) {
-
+    });
   }
 }
 

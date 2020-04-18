@@ -13,6 +13,17 @@ class Board extends React.Component {
     super(props);
     this.selection = this.bitUpdateObj = null;
   }
+  render() {
+    return (
+      <div className="nonogram-board"
+        onMouseDown={this.selectionStartHandler.bind(this)}
+        onMouseUp={this.selectionEndHandler.bind(this)}
+        onMouseMove={this.selectionHandler.bind(this)}
+      >
+        {this.renderRows()}
+      </div>
+    );
+  }
 
   getCellPosition(cell) {
     let rowIndex = cell.dataset.rowIndex;
@@ -26,17 +37,6 @@ class Board extends React.Component {
   getUpdatedExcludedBit(bit) {
     if(bit === -1) { return 0; }
     return -1;
-  }
-  render() {
-    return (
-      <div className="nonogram-board"
-        onMouseDown={this.selectionStartHandler.bind(this)}
-        onMouseUp={this.selectionEndHandler.bind(this)}
-        onMouseMove={this.selectionHandler.bind(this)}
-      >
-        {this.renderRows()}
-      </div>
-    );
   }
   renderRows() {
     let rows = new Array(0);

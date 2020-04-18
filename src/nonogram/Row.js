@@ -13,6 +13,7 @@ class Row extends React.Component {
       </div>
     );
   }
+  
   renderCells() {
     let cells = new Array(0);
     for(let i = 0; i < this.props.length; i++) {
