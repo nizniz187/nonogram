@@ -33,7 +33,7 @@ class Nonogram extends React.Component {
   render() {
     return (
       <div className="nonogram" 
-        onContextMenu={this.preventContextMenu.bind(this)}
+        onContextMenu={this.preventContextMenu}
       >
         <IndicatorPanel type="row" data={this.indicators.rows} />
         <div>
@@ -42,8 +42,8 @@ class Nonogram extends React.Component {
             rowLength={this.state.puzzleBitmap.rowLength} 
             colLength={this.state.puzzleBitmap.colLength}
             userBitmap={this.state.userBitmap}
-            getUserBitmapBit={this.getUserBitmapBit.bind(this)}
-            updateUserBitmapByBit={this.updateUserBitmapByBit.bind(this)}
+            getUserBitmapBit={this.getUserBitmapBit}
+            updateUserBitmapByBit={this.updateUserBitmapByBit}
           />
         </div>
       </div>
@@ -54,6 +54,17 @@ class Nonogram extends React.Component {
       alert('Puzzle Solved!');
     }
   }
+
+  preventContextMenu = e => e.preventDefault();
+  getUserBitmapBit = position => this.state.userBitmap.getBit(position);
+  updateUserBitmapByBit = (position, value) => {
+    this.setState(state => {
+      let userBitmap = state.userBitmap.clone();
+      userBitmap.setBit(position, value);
+
+      return { userBitmap };
+    });
+  };
   
   /**
    * Check if the puzzle is solved with the correct answer.
@@ -74,16 +85,6 @@ class Nonogram extends React.Component {
   checkPuzzleColumnSolved(colIndex) {
     return this.indicators.cols[colIndex].toString() 
       === this.state.userBitmap.getColumnSnappedData(colIndex).toString()
-  }
-  getUserBitmapBit(position) { return this.state.userBitmap.getBit(position); }  
-  preventContextMenu(e) { e.preventDefault(); }
-  updateUserBitmapByBit(position, value) {
-    this.setState(state => {
-      let userBitmap = state.userBitmap.clone();
-      userBitmap.setBit(position, value);
-
-      return { userBitmap };
-    });
   }
 }
 

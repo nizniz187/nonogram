@@ -13,14 +13,14 @@ class Board extends React.Component {
   constructor(props) {
     super(props);
     this.selection = this.bitUpdateObj = null;
-    this.selectionEndHandler = this.selectionEndHandler.bind(this);
+    this.selectionEndHandler = this.selectionEndHandler;
   }
   render() {
     return (
       <div className="nonogram-board"
-        onMouseDown={this.selectionStartHandler.bind(this)}
+        onMouseDown={this.selectionStartHandler}
         onMouseUp={this.selectionEndHandler}
-        onMouseMove={this.selectionHandler.bind(this)}
+        onMouseMove={this.selectionHandler}
       >
         {this.renderRows()}
       </div>
@@ -35,7 +35,7 @@ class Board extends React.Component {
   }
 
   /* Event Handlers */
-  selectionStartHandler(e) {
+  selectionStartHandler = e => {
     let position = this.getCellPosition(e.target);
     this.selection = new BitSelection(position);
 
@@ -50,14 +50,14 @@ class Board extends React.Component {
       : this.getUpdatedBit(oldBit, Cell.BIT_VALUE_CHECKED);
     this.updateBitObj = { oldBit, newBit };
     this.updateUserBitmap();
-  }
-  selectionHandler(e) {
+  };
+  selectionHandler = e => {
     if(this.selection === null) { return; }
 
     this.updateSelectionEnd(this.getCellPosition(e.target));
     this.updateUserBitmap();
-  }
-  selectionEndHandler(e) {
+  };
+  selectionEndHandler = e => {
     if(this.selection === null) { return; }
 
     try{
@@ -68,7 +68,7 @@ class Board extends React.Component {
     } finally {
       this.selection = this.updateBitObj = null;
     }
-  }
+  };
 
   getCellPosition(cell) {
     let rowIndex = cell.dataset.rowIndex;
