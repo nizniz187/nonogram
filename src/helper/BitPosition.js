@@ -8,7 +8,7 @@ class BitPosition {
     rowIndex = Number(rowIndex);
     colIndex = Number(colIndex);
     if(!this.isIndexValid(rowIndex) || !this.isIndexValid(colIndex)) {
-      return null;
+      throw new Error('Invalid position index.');
     }
 
     this.rowIndex = rowIndex;

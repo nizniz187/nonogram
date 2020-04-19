@@ -6,9 +6,7 @@ import BitPosition from 'helper/BitPosition.js';
  */
 class BitSelection {
   constructor(start, end) {
-    this.start = start instanceof BitPosition 
-      ? start 
-      : new BitPosition(start.rowIndex, start.colIndex);
+    this.start = this.createPosition(start);
     if(this.start === null) { throw new Error('Invalid position data.'); }
 
     this.end = this.start;
@@ -18,12 +16,10 @@ class BitSelection {
   /**
    * Check if a position is on the same horizontal or vertial line of this selection.
    * @param {Postion} position
-   * @returns {Booleans}
+   * @returns {Boolean}
    */
   alignWith(position) {
-    position = position instanceof BitPosition 
-      ? position 
-      : new BitPosition(position.rowIndex, position.colIndex);
+    position = this.createPosition(position);
     if(this.start.onRowWith(this.end) && this.start.onRowWith(position)) {
       return true;
     }
@@ -31,12 +27,32 @@ class BitSelection {
       return true;
     }
     return false;
-  }  
+  }
+  contains(position) {
+    position = this.createPosition(position);
+    if(this.alignWith(position) !== true) { return false; }
+
+    if(this.start.rowIndex === position.rowIndex) {
+      let min = Math.min(this.start.colIndex, this.end.colIndex);
+      let max = Math.max(this.start.colIndex, this.end.colIndex);
+      return min <= position.colIndex && position.colIndex <= max;
+    } else if(this.start.colIndex === position.colIndex) {
+      let min = Math.min(this.start.rowIndex, this.end.rowIndex);
+      let max = Math.max(this.start.rowIndex, this.end.rowIndex);
+      return min <= position.rowIndex && position.rowIndex <= max;
+    }
+    return false;
+  }
+  createPosition(position) {
+    if(position instanceof BitPosition) { return position; }
+    
+    return new BitPosition(position.rowIndex, position.colIndex);
+  }
   /**
    * @getter Get column positions array with given row index range.
    * @returns {Array[BitPosition]}
    */
-  getColPositions(colIndex, minRowIndex, maxRowIndex) {
+  getColumnPositions(colIndex, minRowIndex, maxRowIndex) {
     let positions = new Array(0);
     for(let i = minRowIndex; i <= maxRowIndex; i++) {
       positions.push(new BitPosition(i, colIndex));
@@ -48,14 +64,14 @@ class BitSelection {
    * @returns {Array[BitPosition]}
    */
   getPositions() {
-    if(this.direction === BitSelection.DIRECTION_ROW) {
+    if(this.direction === DIRECTION_TYPE_ROW) {
       let minColIndex = Math.min(this.start.colIndex, this.end.colIndex);
       let maxColIndex = Math.max(this.start.colIndex, this.end.colIndex);
       return this.getRowPositions(this.start.rowIndex, minColIndex, maxColIndex);
-    } else if(this.direction === BitSelection.DIRECTION_COLUMN) {
+    } else if(this.direction === DIRECTION_TYPE_COLUMN) {
       let minRowIndex = Math.min(this.start.rowIndex, this.end.rowIndex);
       let maxRowIndex = Math.max(this.start.rowIndex, this.end.rowIndex);
-      return this.getColPositions(this.start.colIndex, minRowIndex, maxRowIndex);
+      return this.getColumnPositions(this.start.colIndex, minRowIndex, maxRowIndex);
     } else {
       return [this.start.clone()];
     }
@@ -74,9 +90,7 @@ class BitSelection {
   updateEnd(end) {
     if(typeof end !== 'object') { return; }
 
-    end = end instanceof BitPosition 
-      ? end 
-      : new BitPosition(end.rowIndex, end.colIndex);
+    end = this.createPosition(end);
     if(end === null || !this.alignWith(end)) { return; }
 
     this.end = end;
@@ -91,18 +105,18 @@ class BitSelection {
    */
   get direction() {
     if(this.start.equals(this.end)) {
-      return BitSelection.DIRECTION_NONE;
+      return DIRECTION_TYPE_NONE;
     }
     if(this.start.onRowWith(this.end)) {
-      return BitSelection.DIRECTION_ROW;
+      return DIRECTION_TYPE_ROW;
     }
     if(this.start.onColWith(this.end)) {
-      return BitSelection.DIRECTION_COLUMN;
+      return DIRECTION_TYPE_COLUMN;
     }
   }
 }
-BitSelection.DIRECTION_NONE = 'NONE';
-BitSelection.DIRECTION_COLUMN = 'COLUMN';
-BitSelection.DIRECTION_ROW = 'ROW';
+const DIRECTION_TYPE_NONE = 'NONE';
+const DIRECTION_TYPE_COLUMN = 'COLUMN';
+const DIRECTION_TYPE_ROW = 'ROW';
 
 export default BitSelection;
