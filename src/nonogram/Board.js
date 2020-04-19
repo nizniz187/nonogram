@@ -13,17 +13,61 @@ class Board extends React.Component {
   constructor(props) {
     super(props);
     this.selection = this.bitUpdateObj = null;
+    this.selectionEndHandler = this.selectionEndHandler.bind(this);
   }
   render() {
     return (
       <div className="nonogram-board"
         onMouseDown={this.selectionStartHandler.bind(this)}
-        onMouseUp={this.selectionEndHandler.bind(this)}
+        onMouseUp={this.selectionEndHandler}
         onMouseMove={this.selectionHandler.bind(this)}
       >
         {this.renderRows()}
       </div>
     );
+  }
+  componentDidMount() {
+    /* Handle selection end outside of the component. */
+    document.addEventListener('mouseup', this.selectionEndHandler);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('mouseup', this.selectionEndHandler);
+  }
+
+  /* Event Handlers */
+  selectionStartHandler(e) {
+    let position = this.getCellPosition(e.target);
+    this.selection = new BitSelection(position);
+
+    let oldBit = this.props.getUserBitmapBit(this.selection.start);
+    /* 
+      Get new bit value by mouse click button type. 
+      Left button for checked mark toggle.
+      Right button for excluded mark toggle.
+    */
+    let newBit = e.button === 2 
+      ? this.getUpdatedBit(oldBit, Cell.BIT_VALUE_EXCLUDED)
+      : this.getUpdatedBit(oldBit, Cell.BIT_VALUE_CHECKED);
+    this.updateBitObj = { oldBit, newBit };
+    this.updateUserBitmap();
+  }
+  selectionHandler(e) {
+    if(this.selection === null) { return; }
+
+    this.updateSelectionEnd(this.getCellPosition(e.target));
+    this.updateUserBitmap();
+  }
+  selectionEndHandler(e) {
+    if(this.selection === null) { return; }
+
+    try{
+      this.updateSelectionEnd(this.getCellPosition(e.target));
+      this.updateUserBitmap();
+    } catch(e) {
+      // Event target is not a cell.
+    } finally {
+      this.selection = this.updateBitObj = null;
+    }
   }
 
   getCellPosition(cell) {
@@ -54,34 +98,9 @@ class Board extends React.Component {
     }
     return rows;
   }
-  selectionEndHandler(e) {
-    if(this.selection === null) { return; }
-
-    this.selection.updateEnd(this.getCellPosition(e.target));
-    this.updateUserBitmap();
-    this.selection = this.updateBitObj = null;
-  }
-  selectionHandler(e) {
-    if(this.selection === null) { return; }
-
-    this.selection.updateEnd(this.getCellPosition(e.target));
-    this.updateUserBitmap();
-  }
-  selectionStartHandler(e) {
-    let position = this.getCellPosition(e.target);
-    this.selection = new BitSelection(position);
-
-    let oldBit = this.props.getUserBitmapBit(this.selection.start);
-    /* 
-      Get new bit value by mouse click button type. 
-      Left button for checked mark toggle.
-      Right button for excluded mark toggle.
-    */
-    let newBit = e.button === 2 
-      ? this.getUpdatedBit(oldBit, Cell.BIT_VALUE_EXCLUDED)
-      : this.getUpdatedBit(oldBit, Cell.BIT_VALUE_CHECKED);
-    this.updateBitObj = { oldBit, newBit };
-    this.updateUserBitmap();
+  updateSelectionEnd(position) {
+    if(this.selection.contains(position)) { return; }
+    this.selection.updateEnd(position);
   }
   updateUserBitmap() {
     if(this.selection === null || this.updateBitObj === null) { return; }
