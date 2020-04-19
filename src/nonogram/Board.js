@@ -1,5 +1,6 @@
 import React from 'react';
 import Row from './Row.js';
+import * as Cell from './Cell.js';
 
 import BitSelection from 'helper/BitSelection.js';
 import BitPosition from 'helper/BitPosition.js';
@@ -30,13 +31,16 @@ class Board extends React.Component {
     let colIndex = cell.dataset.colIndex;
     return new BitPosition(rowIndex, colIndex);
   }
-  getUpdatedBit(bit) {
-    if(bit >= 1) { return -1; }
-    return ++bit;
-  }
-  getUpdatedExcludedBit(bit) {
-    if(bit === -1) { return 0; }
-    return -1;
+  /**
+   * Get updated bit value by given old & expected new bit value.
+   * If the old & new value are the same, then update it to unchecked.
+   * @param {int} oldBit - Old bit value to be updated.
+   * @param {int} newBit - New bit value to be updated to.
+   * @returns {int} Updated bit value.
+   */
+  getUpdatedBit(oldBit, newBit) {
+    if(oldBit === newBit) { return Cell.BIT_VALUE_UNCHECKED; }
+    return newBit;
   }
   renderRows() {
     let rows = new Array(0);
@@ -70,12 +74,12 @@ class Board extends React.Component {
     let oldBit = this.props.getUserBitmapBit(this.selection.start);
     /* 
       Get new bit value by mouse click button type. 
+      Left button for checked mark toggle.
       Right button for excluded mark toggle.
-      Otherwise change marks in turns (unmarked, marked, excluded).
     */
     let newBit = e.button === 2 
-      ? this.getUpdatedExcludedBit(oldBit)
-      : this.getUpdatedBit(oldBit);
+      ? this.getUpdatedBit(oldBit, Cell.BIT_VALUE_EXCLUDED)
+      : this.getUpdatedBit(oldBit, Cell.BIT_VALUE_CHECKED);
     this.updateBitObj = { oldBit, newBit };
     this.updateUserBitmap();
   }
