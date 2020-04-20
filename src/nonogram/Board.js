@@ -2,6 +2,7 @@ import React from 'react';
 import Row from './Row.js';
 import * as Cell from './Cell.js';
 
+import UserBitmap from 'data/UserBitmap.js';
 import BitSelection from 'helper/BitSelection.js';
 import BitPosition from 'helper/BitPosition.js';
 
@@ -50,24 +51,30 @@ class Board extends React.Component {
 
     this.selection = new BitSelection(position);
     let oldBit = this.props.getUserBitmapBit(this.selection.start);
-    /* 
-      Get new bit value by mouse click button type. 
-      Left button for checked mark toggle.
-      Right button for excluded mark toggle.
-    */
-    let newBit = e.button === 2 
-      ? this.getUpdatedBit(oldBit, Cell.BIT_VALUE_EXCLUDED)
-      : this.getUpdatedBit(oldBit, Cell.BIT_VALUE_CHECKED);
+    let newBit;
+    if(e.type === 'touchstart') {
+      /* Get new bit value by old value. */
+      newBit = this.getUpdatedBit(oldBit);
+
+      /* Add touch hold detection handler. */
+      if(oldBit === Cell.BIT_VALUE_UNCHECKED) {
+        this.touchHoldObj = {
+          start: null,
+          animationFrameId: requestAnimationFrame(this.touchHoldHandler)
+        }
+      }
+    } else {
+      /* 
+        Get new bit value by mouse click button type. 
+        Left button for checked mark toggle.
+        Right button for excluded mark toggle.
+      */
+      newBit = e.button === 2 
+        ? this.getUpdatedBit(oldBit, Cell.BIT_VALUE_EXCLUDED)
+        : this.getUpdatedBit(oldBit, Cell.BIT_VALUE_CHECKED);
+    }
     this.updateBitObj = { oldBit, newBit };
     this.updateUserBitmap();
-
-    /* Add touch hold detection handler. */
-    if(e.type === 'touchstart') {
-      this.touchHoldObj = {
-        start: null,
-        animationFrameId: requestAnimationFrame(this.touchHoldHandler)
-      }
-    }
   };
   selectionUpdateHandler = e => {
     if(this.selection === null) { return; }
@@ -131,13 +138,19 @@ class Board extends React.Component {
   /**
    * Get updated bit value by given old & expected new bit value.
    * If the old & new value are the same, then update it to unchecked.
+   * If the new value is not give, then toggle between old value & uncheked value.
    * @param {int} oldBit - Old bit value to be updated.
-   * @param {int} newBit - New bit value to be updated to.
+   * @param {int} [newBit] - New bit value to be updated to.
    * @returns {int} Updated bit value.
    */
   getUpdatedBit(oldBit, newBit) {
-    if(oldBit === newBit) { return Cell.BIT_VALUE_UNCHECKED; }
-    return newBit;
+    if(UserBitmap.isBitValid(newBit)) {
+      if(oldBit === newBit) { return Cell.BIT_VALUE_UNCHECKED; }
+      return newBit;
+    } else {
+      if(oldBit === Cell.BIT_VALUE_UNCHECKED) { return Cell.BIT_VALUE_CHECKED; }
+      return Cell.BIT_VALUE_UNCHECKED;
+    }
   }
   renderRows() {
     let rows = new Array(0);
@@ -168,6 +181,6 @@ class Board extends React.Component {
   }
 }
 
-const TOUCH_HOLD_DURATION = 300;
+const TOUCH_HOLD_DURATION = 400;
 
 export default Board;
