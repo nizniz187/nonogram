@@ -32,10 +32,14 @@ class Board extends React.Component {
   }
   componentDidMount() {
     /* Handle selection end outside of the component. */
-    document.addEventListener('mouseup touchend touchcancel', this.selectionEndHandler);
+    document.addEventListener('mouseup', this.selectionEndHandler);
+    document.addEventListener('touchend', this.selectionEndHandler);
+    document.addEventListener('touchcancel', this.selectionEndHandler);
   }
   componentWillUnmount() {
-    document.removeEventListener('mouseup touchend touchcancel', this.selectionEndHandler);
+    document.removeEventListener('mouseup', this.selectionEndHandler);
+    document.removeEventListener('touchend', this.selectionEndHandler);
+    document.removeEventListener('touchcancel', this.selectionEndHandler);
   }
 
   /* Event Handlers */
