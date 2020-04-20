@@ -19,10 +19,10 @@ class Board extends React.Component {
     return (
       <div className="nonogram-board"
         onMouseDown={this.selectionStartHandler}
-        onMouseMove={this.selectionHandler}
+        onMouseMove={this.selectionUpdateHandler}
         onMouseUp={this.selectionEndHandler}
         onTouchStart={this.selectionStartHandler}
-        onTouchMove={this.selectionHandler}
+        onTouchMove={this.selectionUpdateHandler}
         onTouchEnd={this.selectionEndHandler}
         onTouchCancel={this.selectionEndHandler}
       >
@@ -61,6 +61,7 @@ class Board extends React.Component {
     this.updateBitObj = { oldBit, newBit };
     this.updateUserBitmap();
 
+    /* Add touch hold detection handler. */
     if(e.type === 'touchstart') {
       this.touchHoldObj = {
         start: null,
@@ -68,7 +69,7 @@ class Board extends React.Component {
       }
     }
   };
-  selectionHandler = e => {
+  selectionUpdateHandler = e => {
     if(this.selection === null) { return; }
 
     let target = this.getEventTarget(e);
@@ -82,9 +83,14 @@ class Board extends React.Component {
     e.preventDefault(); // Prevent mouse events triggering on touchend.
     if(this.selection === null) { return; }
     
-    this.selectionHandler(e);
+    this.selectionUpdateHandler(e);
     this.selection = this.updateBitObj = null;
   };
+  /**
+   * Request animation frame for touch hold detection.
+   * If the hold duration meets the threshold, update the selection in excluded mode.
+   * Otherwise ask the next animation frame until it meets or aborted.
+   */
   touchHoldHandler = timestamp => {
     if(!this.touchHoldObj || !this.selection) { return; }
     if(this.selection.length !== 1) { 
