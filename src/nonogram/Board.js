@@ -44,7 +44,8 @@ class Board extends React.Component {
 
   /* Event Handlers */
   selectionStartHandler = e => {
-    let position = this.getCellPosition(e.target);
+    let target = this.getEventTarget(e);
+    let position = this.getCellPosition(target);
     if(position === null) { return; }
 
     this.selection = new BitSelection(position);
