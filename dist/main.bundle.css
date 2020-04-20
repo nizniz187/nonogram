@@ -1,8 +1,6 @@
 .nonogram {
   display: flex;
   max-width: 100%;
-  touch-action: none;
-  -ms-touch-action: none;
 }
 .nonogram,
 .nonogram * {
@@ -11,6 +9,8 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  touch-action: none;
+  -ms-touch-action: none;
 }
 
 /* ^Indicator */
