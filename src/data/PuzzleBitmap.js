@@ -38,6 +38,7 @@ class PuzzleBitmap {
     }
     return data;
   }
+  static isBitValid(bit) { return bit === 0 || bit === 1; }
   static isSizeValid(size) { return Number.isInteger(size) && size > 0; }
 
   clone() { return new PuzzleBitmap({ data: this.data }); }

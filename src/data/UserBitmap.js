@@ -21,6 +21,8 @@ class UserBitmap extends PuzzleBitmap {
       this._data = this.normalizeData(data);
     }
   }
+  
+  static isBitValid(bit) { return bit === -1 || bit === 0 || bit === 1; }
 
   clone() { return new UserBitmap({ data: this.data }); }
   /**
