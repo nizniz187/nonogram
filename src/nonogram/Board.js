@@ -19,8 +19,12 @@ class Board extends React.Component {
     return (
       <div className="nonogram-board"
         onMouseDown={this.selectionStartHandler}
-        onMouseUp={this.selectionEndHandler}
         onMouseMove={this.selectionHandler}
+        onMouseUp={this.selectionEndHandler}
+        onTouchStart={this.selectionStartHandler}
+        onTouchMove={this.selectionHandler}
+        onTouchEnd={this.selectionEndHandler}
+        onTouchCancel={this.selectionEndHandler}
       >
         {this.renderRows()}
       </div>
@@ -28,17 +32,18 @@ class Board extends React.Component {
   }
   componentDidMount() {
     /* Handle selection end outside of the component. */
-    document.addEventListener('mouseup', this.selectionEndHandler);
+    document.addEventListener('mouseup touchend touchcancel', this.selectionEndHandler);
   }
   componentWillUnmount() {
-    document.removeEventListener('mouseup', this.selectionEndHandler);
+    document.removeEventListener('mouseup touchend touchcancel', this.selectionEndHandler);
   }
 
   /* Event Handlers */
   selectionStartHandler = e => {
     let position = this.getCellPosition(e.target);
-    this.selection = new BitSelection(position);
+    if(position === null) { return; }
 
+    this.selection = new BitSelection(position);
     let oldBit = this.props.getUserBitmapBit(this.selection.start);
     /* 
       Get new bit value by mouse click button type. 
@@ -54,26 +59,36 @@ class Board extends React.Component {
   selectionHandler = e => {
     if(this.selection === null) { return; }
 
-    this.updateSelectionEnd(this.getCellPosition(e.target));
+    let target = this.getEventTarget(e);
+    let position = this.getCellPosition(target);
+    if(position === null) { return; }
+
+    this.updateSelectionEnd(position);
     this.updateUserBitmap();
   };
   selectionEndHandler = e => {
     if(this.selection === null) { return; }
-
-    try{
-      this.updateSelectionEnd(this.getCellPosition(e.target));
-      this.updateUserBitmap();
-    } catch(e) {
-      // Event target is not a cell.
-    } finally {
-      this.selection = this.updateBitObj = null;
-    }
+    
+    this.selectionHandler(e);
+    this.selection = this.updateBitObj = null;
   };
 
   getCellPosition(cell) {
+    if(!(cell instanceof HTMLElement)) { return null; }
+
     let rowIndex = cell.dataset.rowIndex;
     let colIndex = cell.dataset.colIndex;
-    return new BitPosition(rowIndex, colIndex);
+    try {
+      return new BitPosition(rowIndex, colIndex);
+    } catch(e) {  //Position index invalid.
+      return null;
+    }
+  }
+  getEventTarget(e) {
+    if(e.changedTouches instanceof TouchList && e.changedTouches.length > 0) {
+      return document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    }
+    return e.target;
   }
   /**
    * Get updated bit value by given old & expected new bit value.
