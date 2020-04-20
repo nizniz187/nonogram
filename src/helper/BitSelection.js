@@ -114,6 +114,13 @@ class BitSelection {
       return DIRECTION_TYPE_COLUMN;
     }
   }
+  get length() {
+    if(this.start.onRowWith(this.end)) {
+      return Math.abs(this.end.colIndex - this.start.colIndex) + 1;
+    } else {
+      return Math.abs(this.end.rowIndex - this.start.rowIndex) + 1;
+    }
+  }
 }
 const DIRECTION_TYPE_NONE = 'NONE';
 const DIRECTION_TYPE_COLUMN = 'COLUMN';

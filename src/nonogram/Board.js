@@ -60,6 +60,13 @@ class Board extends React.Component {
       : this.getUpdatedBit(oldBit, Cell.BIT_VALUE_CHECKED);
     this.updateBitObj = { oldBit, newBit };
     this.updateUserBitmap();
+
+    if(e.type === 'touchstart') {
+      this.touchHoldObj = {
+        start: null,
+        animationFrameId: requestAnimationFrame(this.touchHoldHandler)
+      }
+    }
   };
   selectionHandler = e => {
     if(this.selection === null) { return; }
@@ -72,11 +79,31 @@ class Board extends React.Component {
     this.updateUserBitmap();
   };
   selectionEndHandler = e => {
+    e.preventDefault(); // Prevent mouse events triggering on touchend.
     if(this.selection === null) { return; }
     
     this.selectionHandler(e);
     this.selection = this.updateBitObj = null;
   };
+  touchHoldHandler = timestamp => {
+    if(!this.touchHoldObj || !this.selection) { return; }
+    if(this.selection.length !== 1) { 
+      this.touchHoldObj.start = null;
+      cancelAnimationFrame(this.touchHoldObj.animationFrameId);
+      return; 
+    }
+
+    if(!this.touchHoldObj.start) { this.touchHoldObj.start = timestamp; }
+    if(timestamp - this.touchHoldObj.start >= TOUCH_HOLD_DURATION) {
+      cancelAnimationFrame(this.touchHoldObj.animationFrameId);
+      this.touchHoldObj = null;
+      let newBit = this.getUpdatedBit(this.updateBitObj.oldBit, Cell.BIT_VALUE_EXCLUDED);
+      this.updateBitObj.newBit = newBit;
+      this.props.updateUserBitmapByBit(this.selection.start, newBit);
+    } else {
+      this.touchHoldObj.animationFrameId = requestAnimationFrame(this.touchHoldHandler);
+    }
+  }
 
   getCellPosition(cell) {
     if(!(cell instanceof HTMLElement)) { return null; }
@@ -124,7 +151,7 @@ class Board extends React.Component {
   }
   updateUserBitmap() {
     if(this.selection === null || this.updateBitObj === null) { return; }
-
+    
     let positions = this.selection.getPositions();
     positions.forEach(position => {
       let bit = this.props.userBitmap.getBit(position);
@@ -134,5 +161,7 @@ class Board extends React.Component {
     });
   }
 }
+
+const TOUCH_HOLD_DURATION = 300;
 
 export default Board;
