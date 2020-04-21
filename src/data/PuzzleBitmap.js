@@ -91,6 +91,11 @@ class PuzzleBitmap {
     return snappedData;
   }
   getBit(position) { return this.data[position.rowIndex][position.colIndex]; }
+  /**
+   * Get the count of bits with a given value.
+   * @param {int} bit - Specific bit value to be counted.
+   * @returns {int} Bit count.
+   */
   getBitCount(bit) {
     let count = 0;
     this._data.forEach(row => {
