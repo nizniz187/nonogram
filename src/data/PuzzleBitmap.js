@@ -91,6 +91,13 @@ class PuzzleBitmap {
     return snappedData;
   }
   getBit(position) { return this.data[position.rowIndex][position.colIndex]; }
+  getBitCount(bit) {
+    let count = 0;
+    this._data.forEach(row => {
+      count += row.filter(value => value === bit).length;
+    });
+    return count;
+  }
   getColumnData(colIndex) {
     if(!this.isColumnIndexValid(colIndex)) { throw new Error('Invalid index.'); }
     

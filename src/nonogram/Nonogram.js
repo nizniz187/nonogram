@@ -5,6 +5,7 @@ import UserBitmap from 'data/UserBitmap.js';
 
 import IndicatorPanel from './IndicatorPanel.js';
 import Board from './Board.js';
+import * as Cell from './Cell.js';
 import './Nonogram.css';
 
 /**
@@ -15,19 +16,19 @@ class Nonogram extends React.Component {
   constructor(props) {
     super(props);
 
-    let puzzleBitmap = PuzzleBitmap.createRandom(
+    this.puzzleBitmap = PuzzleBitmap.createRandom(
       Number(this.props.rowLength), Number(this.props.colLength)
     );
     this.indicators = {
-      rows: puzzleBitmap.snappedData,
-      cols: puzzleBitmap.transposedSnappedData
+      rows: this.puzzleBitmap.snappedData,
+      cols: this.puzzleBitmap.transposedSnappedData
     }
     this.state = { 
-      puzzleBitmap: puzzleBitmap, 
       userBitmap: new UserBitmap({ 
-        rowLength: puzzleBitmap.rowLength, 
-        colLength: puzzleBitmap.colLength 
-      })
+        rowLength: this.puzzleBitmap.rowLength, 
+        colLength: this.puzzleBitmap.colLength 
+      }),
+      puzzleStatus: PUZZLE_STATUS_UNSOLVED
     };
   }  
   render() {
@@ -39,20 +40,20 @@ class Nonogram extends React.Component {
         <div>
           <IndicatorPanel type="col" data={this.indicators.cols} />
           <Board 
-            rowLength={this.state.puzzleBitmap.rowLength} 
-            colLength={this.state.puzzleBitmap.colLength}
+            rowLength={this.puzzleBitmap.rowLength} 
+            colLength={this.puzzleBitmap.colLength}
             userBitmap={this.state.userBitmap}
             getUserBitmapBit={this.getUserBitmapBit}
             updateUserBitmapByBit={this.updateUserBitmapByBit}
           />
         </div>
+        <div className="nonogram-alert">
+          <div className="nonogram-alert-msg">
+            {this.getAlertMessage()}
+          </div>
+        </div>
       </div>
     );
-  }
-  componentDidUpdate() {
-    if(this.checkPuzzleSolved()) {
-      alert('Puzzle Solved!');
-    }
   }
 
   preventContextMenu = e => e.preventDefault();
@@ -62,30 +63,70 @@ class Nonogram extends React.Component {
       let userBitmap = state.userBitmap.clone();
       userBitmap.setBit(position, value);
 
-      return { userBitmap };
+      return { 
+        userBitmap,
+        puzzleStatus: this.getPuzzleStatus(userBitmap) 
+      };
     });
   };
   
   /**
    * Check if the puzzle is solved with the correct answer.
    */
-  checkPuzzleSolved() {
-    for(let i = 0; i < this.state.userBitmap.rowLength; i++) {
-      if(this.checkPuzzleRowSolved(i) !== true) { return false; }
+  checkPuzzleSolved(userBitmap) {
+    for(let i = 0; i < userBitmap.rowLength; i++) {
+      if(this.checkPuzzleRowSolved(userBitmap, i) !== true) { return false; }
     }
-    for(let i = 0; i < this.state.userBitmap.colLength; i++) {
-      if(this.checkPuzzleColumnSolved(i) !== true) { return false; }
+    for(let i = 0; i < userBitmap.colLength; i++) {
+      if(this.checkPuzzleColumnSolved(userBitmap, i) !== true) { return false; }
     }
     return true;
   }
-  checkPuzzleRowSolved(rowIndex) {
+  checkPuzzleRowSolved(userBitmap, rowIndex) {
     return this.indicators.rows[rowIndex].toString() 
-      === this.state.userBitmap.getRowSnappedData(rowIndex).toString()
+      === userBitmap.getRowSnappedData(rowIndex).toString()
   }
-  checkPuzzleColumnSolved(colIndex) {
+  checkPuzzleColumnSolved(userBitmap, colIndex) {
     return this.indicators.cols[colIndex].toString() 
-      === this.state.userBitmap.getColumnSnappedData(colIndex).toString()
+      === userBitmap.getColumnSnappedData(colIndex).toString()
+  }
+  getAlertMessage() {
+    if(this.state.puzzleStatus === PUZZLE_STATUS_SOLVED) {
+      return PUZZLE_ALERT_MESSAGE_SOLVED;
+    }
+    if(this.state.puzzleStatus === PUZZLE_STATUS_ERROR) {
+      return PUZZLE_ALERT_MESSAGE_ERROR;
+    }
+    return '';
+  }
+  getPuzzleStatus(userBitmap) {
+    let puzzleBitCount = this.puzzleBitmap.getBitCount(Cell.BIT_VALUE_CHECKED);
+    let userBitCount = userBitmap.getBitCount(Cell.BIT_VALUE_CHECKED);
+    if(puzzleBitCount > userBitCount) { 
+      if(userBitmap.getBitCount(Cell.BIT_VALUE_UNCHECKED) === 0) {
+        // All cell marked but wrong answer.
+        return PUZZLE_STATUS_ERROR;
+      } else {
+        // Puzzle unsolved.
+        return PUZZLE_STATUS_UNSOLVED; 
+      }
+    } else {
+      if(this.checkPuzzleSolved(userBitmap) === true) {
+        // Puzzle solved.
+        return PUZZLE_STATUS_SOLVED;
+      } else {
+        // Checked cells are more than the true solution.
+        return PUZZLE_STATUS_ERROR;
+      }
+    }
   }
 }
+
+const PUZZLE_ALERT_MESSAGE_SOLVED = 'Puzzle Solved!';
+const PUZZLE_ALERT_MESSAGE_ERROR = 'Oops, some marks could be wrong.';
+
+const PUZZLE_STATUS_SOLVED = '1111';
+const PUZZLE_STATUS_UNSOLVED = '0000';
+const PUZZLE_STATUS_ERROR = '9999';
 
 export default Nonogram;
