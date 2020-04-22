@@ -17,8 +17,18 @@ class Nonogram extends React.Component {
     super(props);
 
     this.initGame();
-  }  
+  }
   render() {
+    this.puzzleBitCount = this.state.puzzleBitmap.getBitCount(Cell.BIT_VALUE_CHECKED);
+    this.indicators = {
+      rows: this.state.puzzleBitmap.snappedData,
+      cols: this.state.puzzleBitmap.transposedSnappedData
+    };
+    
+    let userBitCount = this.state.userBitmap.getBitCount(Cell.BIT_VALUE_CHECKED);
+    let userBitCountClassName = this.state.puzzleStatus === PUZZLE_STATUS_ERROR
+      ? 'error' : '';
+
     return (
       <div className="nonogram" 
         onContextMenu={this.preventContextMenu}
@@ -27,14 +37,17 @@ class Nonogram extends React.Component {
           <IndicatorPanel type="row" data={this.indicators.rows} />
           <div>
             <div className="nonogram-action">
-              <button type="button" onClick={this.resetUserBitmap}>Reset</button>
+              <button type="button" onClick={this.resetUserBitmap}>Restart</button>
               <button type="button" onClick={this.initGame}>New Game</button>
             </div>
-            <div className="nonogram-counter">XXX</div>
+            <div className="nonogram-counter">
+              <span className={userBitCountClassName}>{userBitCount} </span>
+               / {this.puzzleBitCount}
+            </div>
             <IndicatorPanel type="col" data={this.indicators.cols} />
             <Board 
-              rowLength={this.puzzleBitmap.rowLength} 
-              colLength={this.puzzleBitmap.colLength}
+              rowLength={this.state.puzzleBitmap.rowLength} 
+              colLength={this.state.puzzleBitmap.colLength}
               userBitmap={this.state.userBitmap}
               getUserBitmapBit={this.getUserBitmapBit}
               updateUserBitmapByBit={this.updateUserBitmapByBit}
@@ -52,21 +65,34 @@ class Nonogram extends React.Component {
     ^Event Handlers
   ------------------------------------------------------------------------- */
   initGame = () => {    
-    this.puzzleBitmap = this.createPuzzle();
-    this.indicators = {
-      rows: this.puzzleBitmap.snappedData,
-      cols: this.puzzleBitmap.transposedSnappedData
-    }
+    let puzzleBitmap = this.createPuzzle();
+    let status = {
+      puzzleBitmap,
+      userBitmap: new UserBitmap({ 
+        rowLength: puzzleBitmap.rowLength, 
+        colLength: puzzleBitmap.colLength 
+      }),
+      puzzleStatus: PUZZLE_STATUS_UNSOLVED
+    };
+
     if(this.state && typeof this.state === 'object') {
-      this.resetUserBitmap();
+      this.setState(() => status);
     } else {
-      this.state = this.getInitialStateObject();
+      this.state = status;
     }
   }
   preventContextMenu = e => e.preventDefault();
   getUserBitmapBit = position => this.state.userBitmap.getBit(position);
   resetUserBitmap = () => {
-    this.setState(() => this.getInitialStateObject());
+    this.setState(() => {
+      return {
+        userBitmap: new UserBitmap({ 
+          rowLength: this.state.puzzleBitmap.rowLength, 
+          colLength: this.state.puzzleBitmap.colLength 
+        }),
+        puzzleStatus: PUZZLE_STATUS_UNSOLVED
+      }
+    });
   };
   updateUserBitmapByBit = (position, value) => {
     this.setState(state => {
@@ -108,35 +134,23 @@ class Nonogram extends React.Component {
       Number(this.props.rowLength), Number(this.props.colLength)
     );
   };
-  getInitialStateObject() {
-    return {
-      userBitmap: new UserBitmap({ 
-        rowLength: this.puzzleBitmap.rowLength, 
-        colLength: this.puzzleBitmap.colLength 
-      }),
-      puzzleStatus: PUZZLE_STATUS_UNSOLVED
-    };
-  }
-  getPuzzleStatus(userBitmap) {
-    let puzzleBitCount = this.puzzleBitmap.getBitCount(Cell.BIT_VALUE_CHECKED);
+  getPuzzleStatus(userBitmap) {    
     let userBitCount = userBitmap.getBitCount(Cell.BIT_VALUE_CHECKED);
-    if(puzzleBitCount > userBitCount) { 
-      if(userBitmap.getBitCount(Cell.BIT_VALUE_UNCHECKED) === 0) {
-        // All cell marked but wrong answer.
-        return PUZZLE_STATUS_ERROR;
-      } else {
-        // Puzzle unsolved.
-        return PUZZLE_STATUS_UNSOLVED; 
-      }
-    } else {
+    if(this.puzzleBitCount <= userBitCount) {
       if(this.checkPuzzleSolved(userBitmap) === true) {
         // Puzzle solved.
         return PUZZLE_STATUS_SOLVED;
-      } else {
-        // Checked cells are more than the true solution.
+      }
+      // Wrong answer.
+      return PUZZLE_STATUS_ERROR;
+    }
+    if(this.puzzleBitCount > userBitCount) { 
+      if(userBitmap.getBitCount(Cell.BIT_VALUE_UNCHECKED) === 0) {
+        // All cell marked but wrong answer.
         return PUZZLE_STATUS_ERROR;
       }
     }
+    return PUZZLE_STATUS_UNSOLVED;
   }
   getPuzzleStatusMessage() {
     if(this.state.puzzleStatus === PUZZLE_STATUS_SOLVED) {
