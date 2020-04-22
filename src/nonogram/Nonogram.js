@@ -51,6 +51,7 @@ class Nonogram extends React.Component {
               userBitmap={this.state.userBitmap}
               getUserBitmapBit={this.getUserBitmapBit}
               updateUserBitmapByBit={this.updateUserBitmapByBit}
+              checkPuzzleSolved={this.checkPuzzleSolved}
             />
           </div>
         </div>
@@ -73,6 +74,19 @@ class Nonogram extends React.Component {
   /* -------------------------------------------------------------------------
     ^Event Handlers
   ------------------------------------------------------------------------- */
+  checkPuzzleSolved = (userBitmap = this.state.userBitmap) => {
+    for(let i = 0; i < userBitmap.rowLength; i++) {
+      if(this.checkPuzzleRowSolved(userBitmap, i) !== true) { return false; }
+    }
+    for(let i = 0; i < userBitmap.colLength; i++) {
+      if(this.checkPuzzleColumnSolved(userBitmap, i) !== true) { return false; }
+    }
+    return true;
+  };
+  getUserBitmapBit = position => this.state.userBitmap.getBit(position);
+  hideLightbox = () => {
+    document.querySelector('.nonogram-lightbox').classList.add('hide');
+  }
   initGame = () => {
     let puzzleBitmap = this.createPuzzle();
     let status = {
@@ -89,11 +103,7 @@ class Nonogram extends React.Component {
     } else {
       this.state = status;
     }
-  }
-  getUserBitmapBit = position => this.state.userBitmap.getBit(position);
-  hideLightbox = () => {
-    document.querySelector('.nonogram-lightbox').classList.add('hide');
-  }
+  };
   preventContextMenu = e => e.preventDefault();
   resetUserBitmap = () => {
     this.setState(() => {
@@ -121,18 +131,6 @@ class Nonogram extends React.Component {
   /* -------------------------------------------------------------------------
     ^Methods
   ------------------------------------------------------------------------- */
-  /**
-   * Check if the puzzle is solved with the correct answer.
-   */
-  checkPuzzleSolved(userBitmap) {
-    for(let i = 0; i < userBitmap.rowLength; i++) {
-      if(this.checkPuzzleRowSolved(userBitmap, i) !== true) { return false; }
-    }
-    for(let i = 0; i < userBitmap.colLength; i++) {
-      if(this.checkPuzzleColumnSolved(userBitmap, i) !== true) { return false; }
-    }
-    return true;
-  }
   checkPuzzleRowSolved(userBitmap, rowIndex) {
     return this.indicators.rows[rowIndex].toString() 
       === userBitmap.getRowSnappedData(rowIndex).toString()

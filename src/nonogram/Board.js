@@ -109,7 +109,7 @@ class Board extends React.Component {
    */
   touchHoldHandler = timestamp => {
     if(!this.touchHoldObj || !this.selection) { return; }
-    if(this.selection.length !== 1) { 
+    if(this.selection.length !== 1 || this.props.checkPuzzleSolved()) { 
       this.touchHoldObj.start = null;
       cancelAnimationFrame(this.touchHoldObj.animationFrameId);
       return; 
