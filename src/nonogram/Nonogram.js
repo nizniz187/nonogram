@@ -16,14 +16,7 @@ class Nonogram extends React.Component {
   constructor(props) {
     super(props);
 
-    this.puzzleBitmap = PuzzleBitmap.createRandom(
-      Number(this.props.rowLength), Number(this.props.colLength)
-    );
-    this.indicators = {
-      rows: this.puzzleBitmap.snappedData,
-      cols: this.puzzleBitmap.transposedSnappedData
-    }
-    this.state = this.getInitialStateObject();
+    this.initGame();
   }  
   render() {
     return (
@@ -35,7 +28,7 @@ class Nonogram extends React.Component {
           <div>
             <div className="nonogram-action">
               <button type="button" onClick={this.resetUserBitmap}>Reset</button>
-              <button type="button" onClick={this.createNewPuzzle}>New Game</button>
+              <button type="button" onClick={this.initGame}>New Game</button>
             </div>
             <div className="nonogram-counter">XXX</div>
             <IndicatorPanel type="col" data={this.indicators.cols} />
@@ -58,9 +51,18 @@ class Nonogram extends React.Component {
   /* -------------------------------------------------------------------------
     ^Event Handlers
   ------------------------------------------------------------------------- */
-  createNewPuzzle = () => {
-
-  };
+  initGame = () => {    
+    this.puzzleBitmap = this.createPuzzle();
+    this.indicators = {
+      rows: this.puzzleBitmap.snappedData,
+      cols: this.puzzleBitmap.transposedSnappedData
+    }
+    if(this.state && typeof this.state === 'object') {
+      this.resetUserBitmap();
+    } else {
+      this.state = this.getInitialStateObject();
+    }
+  }
   preventContextMenu = e => e.preventDefault();
   getUserBitmapBit = position => this.state.userBitmap.getBit(position);
   resetUserBitmap = () => {
@@ -101,6 +103,11 @@ class Nonogram extends React.Component {
     return this.indicators.cols[colIndex].toString() 
       === userBitmap.getColumnSnappedData(colIndex).toString()
   }
+  createPuzzle() {
+    return PuzzleBitmap.createRandom(
+      Number(this.props.rowLength), Number(this.props.colLength)
+    );
+  };
   getInitialStateObject() {
     return {
       userBitmap: new UserBitmap({ 

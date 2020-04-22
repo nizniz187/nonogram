@@ -43,7 +43,9 @@ class Board extends React.Component {
     document.removeEventListener('touchcancel', this.selectionEndHandler);
   }
 
-  /* Event Handlers */
+  /* -------------------------------------------------------------------------
+    ^Event Handlers
+  ------------------------------------------------------------------------- */
   selectionStartHandler = e => {
     let target = this.getEventTarget(e);
     let position = this.getCellPosition(target);
@@ -118,6 +120,9 @@ class Board extends React.Component {
     }
   }
 
+  /* -------------------------------------------------------------------------
+    ^Methods
+  ------------------------------------------------------------------------- */
   getCellPosition(cell) {
     if(!(cell instanceof HTMLElement)) { return null; }
 
