@@ -99,12 +99,11 @@
   background-color: #FAFAFA;
   border: 1px solid black;
   box-sizing: border-box;
-  display: none;
   position: fixed; top: 20%; left: calc((100% - 300px) / 2);
   padding: 30px;
   text-align: center;
   width: 300px;
 }
-.nonogram-lightbox.show {
-  display: block;
+.nonogram-lightbox.hide {
+  display: none;
 }

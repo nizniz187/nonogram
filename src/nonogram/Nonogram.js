@@ -28,8 +28,6 @@ class Nonogram extends React.Component {
     let userBitCount = this.state.userBitmap.getBitCount(Cell.BIT_VALUE_CHECKED);
     let userBitCountErrorClass = this.state.puzzleStatus === PUZZLE_STATUS_ERROR
       ? 'error' : '';
-    let lightboxSolvedClass = this.state.puzzleStatus === PUZZLE_STATUS_SOLVED
-      ? 'show' : '';
 
     return (
       <div className="nonogram" 
@@ -56,12 +54,20 @@ class Nonogram extends React.Component {
             />
           </div>
         </div>
-        <div className={`nonogram-lightbox ${lightboxSolvedClass}`}>
-          <div>{this.getPuzzleStatusMessage()}</div>
-          <button type="button" onClick={this.hideLightbox}>OK</button>
-        </div>
+        {this.renderLightbox()}
       </div>
     );
+  }
+  componentDidUpdate() {
+    if(typeof this.props.solvedCallback === 'function' 
+      && this.state.puzzleStatus === PUZZLE_STATUS_SOLVED) {
+      this.props.solvedCallback();
+      return;
+    }
+    if(typeof this.props.errorCallback === 'function' 
+      && this.state.puzzleStatus === PUZZLE_STATUS_ERROR) {
+      this.props.errorCallback();
+    }
   }
 
   /* -------------------------------------------------------------------------
@@ -86,7 +92,7 @@ class Nonogram extends React.Component {
   }
   getUserBitmapBit = position => this.state.userBitmap.getBit(position);
   hideLightbox = () => {
-    document.querySelector('.nonogram-lightbox').classList.remove('show');
+    document.querySelector('.nonogram-lightbox').classList.add('hide');
   }
   preventContextMenu = e => e.preventDefault();
   resetUserBitmap = () => {
@@ -166,6 +172,17 @@ class Nonogram extends React.Component {
       return PUZZLE_ALERT_MESSAGE_ERROR;
     }
     return '';
+  }
+  renderLightbox() {
+    if(this.props.preventDefaultSolvedHandler === 'true') { return null; }
+    if(this.state.puzzleStatus !== PUZZLE_STATUS_SOLVED) { return null; }
+    
+    return (
+      <div className={`nonogram-lightbox`}>
+        <div>{this.getPuzzleStatusMessage()}</div>
+        <button type="button" onClick={this.hideLightbox}>OK</button>
+      </div>
+    );
   }
 }
 
