@@ -1,6 +1,5 @@
 .nonogram {
-  display: flex;
-  max-width: 100%;
+  display: flex; flex-direction: column; justify-content: space-around;
 }
 .nonogram,
 .nonogram * {
@@ -13,9 +12,38 @@
   -ms-touch-action: none;
 }
 
+/* ^counter */
+.nonogram-counter {
+  color: #999;
+  margin-bottom: 20px;
+  text-align: right;
+}
+.nonogram-coutner .error {
+  color: red;
+  font-weight: bold;
+}
+
+/* ^action */
+.nonogram-action {
+  margin-bottom: 10px;
+  text-align: right;
+}
+.nonogram-action button:not(:first-of-type) {
+  margin-left: 5px;
+}
+
+/* ^game */
+.nonogram-game {
+  display: flex; justify-content: center;
+  margin-bottom: 10px;
+}
+
 /* ^Indicator */
 .nonogram-indicator-panel {
   display: flex; flex-wrap: nowrap; align-items: flex-end;
+}
+.nonogram-indicator-panel.col {
+  flex-grow: 1;
 }
 .nonogram-indicator-panel.row {
   flex-direction: column; justify-content: flex-end;

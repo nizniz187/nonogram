@@ -36,28 +36,40 @@ class Nonogram extends React.Component {
       <div className="nonogram" 
         onContextMenu={this.preventContextMenu}
       >
-        <IndicatorPanel type="row" data={this.indicators.rows} />
-        <div>
-          <IndicatorPanel type="col" data={this.indicators.cols} />
-          <Board 
-            rowLength={this.puzzleBitmap.rowLength} 
-            colLength={this.puzzleBitmap.colLength}
-            userBitmap={this.state.userBitmap}
-            getUserBitmapBit={this.getUserBitmapBit}
-            updateUserBitmapByBit={this.updateUserBitmapByBit}
-          />
-        </div>
-        <div className="nonogram-alert">
-          <div className="nonogram-alert-msg">
-            {this.getAlertMessage()}
+        <div className="nonogram-game">
+          <IndicatorPanel type="row" data={this.indicators.rows} />
+          <div>
+            <div className="nonogram-action">
+              <button type="button" onClick={this.resetUserBitmap}>Reset</button>
+              <button type="button" onClick={this.createNewPuzzle}>New Game</button>
+            </div>
+            <div className="nonogram-counter">XXX</div>
+            <IndicatorPanel type="col" data={this.indicators.cols} />
+            <Board 
+              rowLength={this.puzzleBitmap.rowLength} 
+              colLength={this.puzzleBitmap.colLength}
+              userBitmap={this.state.userBitmap}
+              getUserBitmapBit={this.getUserBitmapBit}
+              updateUserBitmapByBit={this.updateUserBitmapByBit}
+            />
           </div>
+        </div>
+        <div className="nonogram-lightbox">
+          {this.getPuzzleStatusMessage()}
         </div>
       </div>
     );
   }
 
+  /* Event Handlers */
+  createNewPuzzle = () => {
+
+  };
   preventContextMenu = e => e.preventDefault();
   getUserBitmapBit = position => this.state.userBitmap.getBit(position);
+  resetUserBitmap = () => {
+
+  };
   updateUserBitmapByBit = (position, value) => {
     this.setState(state => {
       let userBitmap = state.userBitmap.clone();
@@ -90,15 +102,6 @@ class Nonogram extends React.Component {
     return this.indicators.cols[colIndex].toString() 
       === userBitmap.getColumnSnappedData(colIndex).toString()
   }
-  getAlertMessage() {
-    if(this.state.puzzleStatus === PUZZLE_STATUS_SOLVED) {
-      return PUZZLE_ALERT_MESSAGE_SOLVED;
-    }
-    if(this.state.puzzleStatus === PUZZLE_STATUS_ERROR) {
-      return PUZZLE_ALERT_MESSAGE_ERROR;
-    }
-    return '';
-  }
   getPuzzleStatus(userBitmap) {
     let puzzleBitCount = this.puzzleBitmap.getBitCount(Cell.BIT_VALUE_CHECKED);
     let userBitCount = userBitmap.getBitCount(Cell.BIT_VALUE_CHECKED);
@@ -119,6 +122,15 @@ class Nonogram extends React.Component {
         return PUZZLE_STATUS_ERROR;
       }
     }
+  }
+  getPuzzleStatusMessage() {
+    if(this.state.puzzleStatus === PUZZLE_STATUS_SOLVED) {
+      return PUZZLE_ALERT_MESSAGE_SOLVED;
+    }
+    if(this.state.puzzleStatus === PUZZLE_STATUS_ERROR) {
+      return PUZZLE_ALERT_MESSAGE_ERROR;
+    }
+    return '';
   }
 }
 
