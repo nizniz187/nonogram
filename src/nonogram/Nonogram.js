@@ -73,7 +73,7 @@ class Nonogram extends React.Component {
   /* -------------------------------------------------------------------------
     ^Event Handlers
   ------------------------------------------------------------------------- */
-  initGame = () => {    
+  initGame = () => {
     let puzzleBitmap = this.createPuzzle();
     let status = {
       puzzleBitmap,

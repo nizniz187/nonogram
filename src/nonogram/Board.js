@@ -89,11 +89,18 @@ class Board extends React.Component {
     this.updateUserBitmap();
   };
   selectionEndHandler = e => {
-    e.preventDefault(); // Prevent mouse events triggering on touchend.
     if(this.selection === null) { return; }
+
+    let target = this.getEventTarget(e);
+    let position = this.getCellPosition(target);
+    if(position === null) { return; }
+
+    this.updateSelectionEnd(position);
+    this.updateUserBitmap();
     
     this.selectionUpdateHandler(e);
     this.selection = this.updateBitObj = null;
+    e.preventDefault(); // Prevent mouse events after the touch events.
   };
   /**
    * Request animation frame for touch hold detection.
