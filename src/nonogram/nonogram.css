@@ -68,7 +68,7 @@
   padding-left: 4px; padding-right: 4px;
 }
 
-/* ^Game Board */
+/* ^Board */
 .nonogram-row {
   display: flex; flex-wrap: nowrap;
 }
@@ -92,4 +92,19 @@
 }
 .nonogram-cell.excluded:before {
   content: '✖';
+}
+
+/* ^Lightbox */
+.nonogram-lightbox {
+  background-color: #FAFAFA;
+  border: 1px solid black;
+  box-sizing: border-box;
+  display: none;
+  position: fixed; top: 20%; left: calc((100% - 300px) / 2);
+  padding: 30px;
+  text-align: center;
+  width: 300px;
+}
+.nonogram-lightbox.show {
+  display: block;
 }
