@@ -15,8 +15,8 @@ class App extends React.Component{
 	render(){
 		return <Router>
 			<Switch>
-				<Route exact path="/" component={HomePage} />
         <Route path={['/game/:level']} component={GamePage} />
+				<Route path="/" component={HomePage} />
 			</Switch>
 		</Router>;
 	}
