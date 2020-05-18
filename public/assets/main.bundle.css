@@ -1,3 +1,41 @@
+.logo {
+  width: 100%; height: 300px;
+}
+
+.page-container {
+  max-width: 320px; min-height: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.btn {
+  background-color: #EFEFEF;
+  border-radius: 5px;
+  box-sizing: border-box;
+  display: inline-block;
+  text-decoration: none;
+  margin-bottom: 5px;
+  padding: 10px;
+}
+.btn, .btn:active, .btn:focus, .btn:visited {
+  color: black;
+}
+.btn-full {
+  width: 100%;
+}
+
+.link {
+  display: inline-block;
+}
+.link-plain {
+  text-decoration: none;
+}
+.link-plain, .link-plain:active, .link-plain:focus, .link-plain:visited {
+  color: black;
+}
+
+.mt-10 { margin-top: 10px; }
+.mt-20 { margin-top: 20px; }
 .nonogram {
   display: flex; flex-direction: column; justify-content: space-around;
 }
